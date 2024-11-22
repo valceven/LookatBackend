@@ -1,0 +1,6 @@
+@LookatBackend_HostAddress = http://localhost:5121
+
+GET {{LookatBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
