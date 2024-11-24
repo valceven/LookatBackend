@@ -4,6 +4,7 @@ using LookatBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    partial class LookatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241123172706_second update")]
+    partial class secondupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,6 +102,7 @@ namespace LookatBackend.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("BarangayId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("BarangayLoc")
@@ -120,9 +124,8 @@ namespace LookatBackend.Migrations
                     b.Property<bool>("IsVerified")
                         .HasColumnType("bit");
 
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(15)");
+                    b.Property<int>("MobileNumber")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -166,7 +169,9 @@ namespace LookatBackend.Migrations
                 {
                     b.HasOne("LookatBackend.Models.Barangay", "Barangay")
                         .WithMany()
-                        .HasForeignKey("BarangayId");
+                        .HasForeignKey("BarangayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Barangay");
                 });

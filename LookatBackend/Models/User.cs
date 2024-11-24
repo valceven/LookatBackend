@@ -10,10 +10,15 @@ namespace LookatBackend.Models
 
         [Required]
         [Column(TypeName = "nvarchar(100)")]
+        public string UserName { get; set; }
+
+        [Required]
+        [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
 
         [Required]
-        public int MobileNumber { get; set; }
+        [Column(TypeName = "nvarchar(15)")]
+        public string MobileNumber { get; set; } // Changed to string
 
         [Required]
         [DataType(DataType.Date)]
@@ -21,7 +26,7 @@ namespace LookatBackend.Models
 
         [Required]
         [Column(TypeName = "nvarchar(25)")]
-        public string PhysicalIdNumber {  get; set; }
+        public string PhysicalIdNumber { get; set; }
 
         [Required]
         [Column(TypeName = "nvarchar(100)")]
@@ -53,12 +58,8 @@ namespace LookatBackend.Models
         [NotMapped]
         public IFormFile ProfilePicture { get; set; }
 
-        [Required]
         [ForeignKey("Barangay")]
-        public string BarangayId { get; set; }
-        public Barangay Barangay {  get; set; }
-
-        
-
+        public string? BarangayId { get; set; } // Made nullable
+        public Barangay Barangay { get; set; }
     }
 }
