@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace LookatBackend.Dtos
+namespace LookatBackend.Dtos.User
 {
     public class UserDto
     {
@@ -21,6 +21,6 @@ namespace LookatBackend.Dtos
         public bool IsVerified { get; set; }
         public IFormFile ProfilePicture { get; set; }
         public string? BarangayId { get; set; } // Made nullable
-        public Barangay Barangay { get; set; }
+       // public Barangay Barangay { get; set; }
     }
 }

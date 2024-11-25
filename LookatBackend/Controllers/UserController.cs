@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
 using LookatBackend.Mappers;
-using LookatBackend.Dtos;
+using LookatBackend.Dtos.User;
 
 namespace LookatBackend.Controllers
 {

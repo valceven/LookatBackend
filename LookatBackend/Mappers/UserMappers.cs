@@ -1,4 +1,4 @@
-﻿using LookatBackend.Dtos;
+﻿using LookatBackend.Dtos.User;
 using LookatBackend.Models;
 
 namespace LookatBackend.Mappers
@@ -10,7 +10,15 @@ namespace LookatBackend.Mappers
             return new UserDto
             {
                 UserId = userModel.UserId, // add late
-                Purok = userModel.Purok          
+                UserName = userModel.UserName,
+                MobileNumber = userModel.MobileNumber,
+                Date = userModel.Date,
+                PhysicalIdNumber = userModel.PhysicalIdNumber,
+                Purok = userModel.Purok,
+                BarangayLoc = userModel.BarangayLoc,
+                CityMunicipality = userModel.CityMunicipality,
+                Province = userModel.Province,
+                Email = userModel.Email
             };
         }
 

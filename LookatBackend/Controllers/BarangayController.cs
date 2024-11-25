@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
+using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
+using LookatBackend.Mappers;
 
 namespace LookatBackend.Controllers
 {
@@ -17,7 +19,8 @@ namespace LookatBackend.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var barangays = _context.Barangays.ToList();
+            var barangays = _context.Barangays.ToList()
+                .Select(b => b.ToBarangayDto());
 
             return Ok(barangays);
         }
@@ -32,6 +35,16 @@ namespace LookatBackend.Controllers
                 return NotFound();
             }
             return Ok(barangay);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateBarangayRequestDto barangayDto)
+        {
+            var barangayModel = barangayDto.ToBarangayFromCreateDto();
+            _context.Barangays.Add(barangayModel);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(Get), new { id = barangayModel.BarangayId }, barangayModel.ToBarangayDto());
         }
     }
 }

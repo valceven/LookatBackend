@@ -55,7 +55,10 @@ namespace LookatBackend.Migrations
             modelBuilder.Entity("LookatBackend.Models.DocumentType", b =>
                 {
                     b.Property<int>("DocumentId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocumentId"));
 
                     b.Property<string>("DocumentName")
                         .IsRequired()
@@ -63,9 +66,6 @@ namespace LookatBackend.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
 
                     b.HasKey("DocumentId");
 
@@ -80,12 +80,18 @@ namespace LookatBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
 
-                    b.Property<int>("requestType")
+                    b.Property<int>("DocumentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RequestType")
                         .HasColumnType("int");
 
                     b.HasKey("RequestId");
 
-                    b.HasIndex("requestType");
+                    b.HasIndex("DocumentId");
 
                     b.ToTable("Requests");
                 });
@@ -155,7 +161,7 @@ namespace LookatBackend.Migrations
                 {
                     b.HasOne("LookatBackend.Models.DocumentType", "DocumentType")
                         .WithMany()
-                        .HasForeignKey("requestType")
+                        .HasForeignKey("DocumentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

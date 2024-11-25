@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
+using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
+using LookatBackend.Mappers;
 
 namespace LookatBackend.Controllers
 {
@@ -16,7 +18,8 @@ namespace LookatBackend.Controllers
         [HttpGet]
         public IActionResult GetAll() {
 
-            var documents = _context.DocumentTypes.ToList();
+            var documents = _context.DocumentTypes.ToList()
+                .Select(d => d.ToDocumentTypeDto());
 
             return Ok(documents);
         }
@@ -32,6 +35,17 @@ namespace LookatBackend.Controllers
             }
 
             return Ok(document);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateDocumentTypeRequestDto documentTypeDto)
+        {
+            var documentModel = documentTypeDto.ToDocumentTypeFromCreateDto();
+            _context.DocumentTypes.Add(documentModel);
+            _context.SaveChanges();
+
+            return CreatedAtAction(nameof(Get), new { id = documentModel.DocumentId}, documentModel.ToDocumentTypeDto());
+
         }
     }
 }

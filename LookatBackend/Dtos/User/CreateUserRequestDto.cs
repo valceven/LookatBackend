@@ -1,6 +1,6 @@
 ﻿using LookatBackend.Models;
 
-namespace LookatBackend.Dtos
+namespace LookatBackend.Dtos.User
 {
     public class CreateUserRequestDto
     {

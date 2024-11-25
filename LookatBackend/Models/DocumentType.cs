@@ -7,15 +7,15 @@ namespace LookatBackend.Models
     {
 
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DocumentId { get; set; }
 
         [Required]
         [Column(TypeName = "nvarchar(255)")]
         public string DocumentName { get; set; }
 
+        [Required]
         public double Price { get; set; }
-
-        public int Quantity { get; set; }
+        
     }
 }

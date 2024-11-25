@@ -9,11 +9,16 @@ namespace LookatBackend.Models
         [Key]
         public int RequestId { get; set; }
 
+        [Required]
+        public int RequestType { get; set; }
+
         [ForeignKey("DocumentType")]
         [Required]
-        public int requestType { get; set; }
+        public int DocumentId { get; set; }
         public DocumentType DocumentType { get; set; }
 
+        [Required]
+        public int Quantity { get; set; }
 
     }
 }
