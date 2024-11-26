@@ -2,6 +2,7 @@
 using LookatBackend.Models;
 using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
 using LookatBackend.Mappers;
+using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
 
 namespace LookatBackend.Controllers
 {
@@ -46,6 +47,25 @@ namespace LookatBackend.Controllers
 
             return CreatedAtAction(nameof(Get), new { id = documentModel.DocumentId}, documentModel.ToDocumentTypeDto());
 
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateDocumentTypeRequestDto documentTypeDto)
+        {
+            var documentTypeModel = _context.DocumentTypes.FirstOrDefault(x => x.DocumentId == id);
+
+            if (documentTypeModel == null)
+            {
+                return NotFound();
+            }
+
+            documentTypeModel.DocumentName = documentTypeDto.DocumentName;
+            documentTypeModel.Price = documentTypeDto.Price;
+
+            _context.SaveChanges();
+
+            return Ok(documentTypeModel.ToDocumentTypeDto());
         }
     }
 }

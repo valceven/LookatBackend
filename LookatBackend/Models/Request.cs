@@ -8,7 +8,6 @@ namespace LookatBackend.Models
 
         [Key]
         public int RequestId { get; set; }
-
         [Required]
         public int RequestType { get; set; }
 

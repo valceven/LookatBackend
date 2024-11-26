@@ -1,8 +1,9 @@
-﻿namespace LookatBackend.Dtos.Request
+using LookatBackend.Models;
+
+namespace LookatBackend.Dtos.UpdateRequestRequestDto
 {
-    public class RequestDto
+    public class UpdateRequestRequestDto
     {
-        public int RequestId { get; set; }
         public int RequestType { get; set; }
         public int DocumentId { get; set; }
         public int Quantity { get; set; }

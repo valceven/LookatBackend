@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
 using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
 using LookatBackend.Mappers;
+using LookatBackend.Dtos.Barangay.UpdateBarangayRequestDto;
 
 namespace LookatBackend.Controllers
 {
@@ -45,6 +46,29 @@ namespace LookatBackend.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(Get), new { id = barangayModel.BarangayId }, barangayModel.ToBarangayDto());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] string id, [FromBody] UpdateBarangayRequestDto barangayDto)
+        {
+            var barangayModel = _context.Barangays.FirstOrDefault(x => x.BarangayId == id);
+
+            if (barangayModel == null)
+            {
+                return NotFound();
+            }
+
+            barangayModel.BarangayName = barangayDto.BarangayName;
+            barangayModel.Purok = barangayDto.Purok;
+            barangayModel.BarangayLoc = barangayDto.BarangayLoc;
+            barangayModel.CityMunicipality = barangayDto.CityMunicipality;
+            barangayModel.Province = barangayDto.Province;
+
+            _context.SaveChanges();
+
+            return Ok(barangayModel.ToBarangayDto());
+
         }
     }
 }

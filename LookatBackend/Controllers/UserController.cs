@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
 using LookatBackend.Mappers;
 using LookatBackend.Dtos.User;
+using LookatBackend.Dtos.UpdateUser;
 
 namespace LookatBackend.Controllers
 {
@@ -48,6 +48,33 @@ namespace LookatBackend.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(GetById), new {id = userModel.UserId}, userModel.ToUserDto());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
+        {
+            var userModel = _context.Users.FirstOrDefault(x => x.UserId == id);
+
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+
+            userModel.UserName = updateDto.UserName;
+            userModel.Password = updateDto.Password;
+            userModel.MobileNumber = updateDto.MobileNumber;
+            userModel.Date = updateDto.Date;
+            userModel.PhysicalIdNumber = updateDto.PhysicalIdNumber;
+            userModel.Purok = updateDto.Purok;
+            userModel.BarangayLoc = updateDto.BarangayLoc;
+            userModel.CityMunicipality = updateDto.CityMunicipality;
+            userModel.Province = updateDto.Province;
+            userModel.Email = updateDto.Email;
+
+            _context.SaveChanges();
+
+            return Ok(userModel.ToUserDto()); 
         }
 
     }

@@ -2,7 +2,8 @@
 using LookatBackend.Models;
 using LookatBackend.Dtos.CreateRequestRequestDto;
 using LookatBackend.Mappers;
-using LookatBackend.Dtos.Request;
+using LookatBackend.Dtos.UpdateRequestRequestDto;
+using Microsoft.EntityFrameworkCore;
 
 namespace LookatBackend.Controllers
 {
@@ -47,6 +48,26 @@ namespace LookatBackend.Controllers
             _context.SaveChanges();
 
             return CreatedAtAction(nameof(Get), new { id = requestModel.RequestId }, requestModel.ToRequestDto());
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public IActionResult Update([FromRoute] int id, [FromBody] UpdateRequestRequestDto requestDto)
+        {
+            var requestModel = _context.Requests.FirstOrDefault(x => x.RequestId == id);
+
+            if (requestModel == null)
+            {
+                return NotFound();
+            }
+
+            requestModel.RequestType = requestDto.RequestType;
+            requestModel.DocumentId = requestDto.DocumentId;
+            requestModel.Quantity = requestDto.Quantity;
+
+            _context.SaveChanges();
+
+            return Ok(requestModel.ToRequestDto());
         }
     }
 }

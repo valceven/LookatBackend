@@ -1,0 +1,15 @@
+// post template
+// go to post then type api route then click raw copy the text below then change to desired values :)
+
+{
+    "userName": "JohnDoe",
+    "password": "SecurePassword123",
+    "mobileNumber": "09123456789",
+    "date": "2024-11-27T00:00:00",
+    "physicalIdNumber": "ID12345678",
+    "purok": "Purok 5",
+    "barangayLoc": "Barangay Example",
+    "cityMunicipality": "Sample City",
+    "province": "Sample Province",
+    "email": "johndoe@example.com"
+}
