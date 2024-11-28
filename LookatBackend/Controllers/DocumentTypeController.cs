@@ -3,6 +3,7 @@ using LookatBackend.Models;
 using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
 using LookatBackend.Mappers;
 using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
+using Microsoft.EntityFrameworkCore;
 
 namespace LookatBackend.Controllers
 {
@@ -17,43 +18,41 @@ namespace LookatBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll() {
+        public async Task<IActionResult> GetAll()
+        {
+            var documentTypes = await _context.DocumentTypes.ToListAsync();
+            var documentDtos = documentTypes.Select(d => d.ToDocumentTypeDto());
 
-            var documents = _context.DocumentTypes.ToList()
-                .Select(d => d.ToDocumentTypeDto());
-
-            return Ok(documents);
+            return Ok(documentDtos);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var document = _context.DocumentTypes.Find(id);
+            var document = await _context.DocumentTypes.FindAsync(id);
 
             if (document == null)
             {
                 return NotFound();
             }
 
-            return Ok(document);
+            return Ok(document.ToDocumentTypeDto());
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateDocumentTypeRequestDto documentTypeDto)
+        public async Task<IActionResult> Create([FromBody] CreateDocumentTypeRequestDto documentTypeDto)
         {
             var documentModel = documentTypeDto.ToDocumentTypeFromCreateDto();
-            _context.DocumentTypes.Add(documentModel);
-            _context.SaveChanges();
+            await _context.DocumentTypes.AddAsync(documentModel);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Get), new { id = documentModel.DocumentId}, documentModel.ToDocumentTypeDto());
-
+            return CreatedAtAction(nameof(Get), new { id = documentModel.DocumentId }, documentModel.ToDocumentTypeDto());
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateDocumentTypeRequestDto documentTypeDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDocumentTypeRequestDto documentTypeDto)
         {
-            var documentTypeModel = _context.DocumentTypes.FirstOrDefault(x => x.DocumentId == id);
+            var documentTypeModel = await _context.DocumentTypes.FirstOrDefaultAsync(x => x.DocumentId == id);
 
             if (documentTypeModel == null)
             {
@@ -63,16 +62,15 @@ namespace LookatBackend.Controllers
             documentTypeModel.DocumentName = documentTypeDto.DocumentName;
             documentTypeModel.Price = documentTypeDto.Price;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(documentTypeModel.ToDocumentTypeDto());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var documentTypeModel = _context.DocumentTypes.FirstOrDefault(x => x.DocumentId == id);
+            var documentTypeModel = await _context.DocumentTypes.FirstOrDefaultAsync(x => x.DocumentId == id);
 
             if (documentTypeModel == null)
             {
@@ -80,7 +78,7 @@ namespace LookatBackend.Controllers
             }
 
             _context.DocumentTypes.Remove(documentTypeModel);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

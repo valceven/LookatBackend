@@ -3,6 +3,7 @@ using LookatBackend.Models;
 using LookatBackend.Mappers;
 using LookatBackend.Dtos.User;
 using LookatBackend.Dtos.UpdateUser;
+using Microsoft.EntityFrameworkCore;
 
 namespace LookatBackend.Controllers
 {
@@ -18,43 +19,42 @@ namespace LookatBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _context.Users.ToList()
-             .Select(s => s.ToUserDto()); // this is to select only the data to be given making it more secure because for example
-            // we dont want to return a password right?
+            var users = await _context.Users
+                .Select(s => s.ToUserDto())
+                .ToListAsync();
 
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var user = _context.Users.Find(id);
+            var user = await _context.Users.FindAsync(id);
 
             if (user == null)
             {
                 return NotFound();
             }
 
-            return Ok(user);
+            return Ok(user.ToUserDto());
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateUserRequestDto userDto)
+        public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
             var userModel = userDto.ToUserFromCreateDto();
-            _context.Users.Add(userModel);
-            _context.SaveChanges();
+            await _context.Users.AddAsync(userModel);
+            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new {id = userModel.UserId}, userModel.ToUserDto());
+            return CreatedAtAction(nameof(GetById), new { id = userModel.UserId }, userModel.ToUserDto());
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateUserRequestDto updateDto)
         {
-            var userModel = _context.Users.FirstOrDefault(x => x.UserId == id);
+            var userModel = await _context.Users.FirstOrDefaultAsync(x => x.UserId == id);
 
             if (userModel == null)
             {
@@ -63,7 +63,7 @@ namespace LookatBackend.Controllers
 
             userModel.UserName = updateDto.UserName;
             userModel.FirstName = updateDto.FirstName;
-            userModel.LastName = updateDto.FirstName;
+            userModel.LastName = updateDto.LastName;
             userModel.Password = updateDto.Password;
             userModel.MobileNumber = updateDto.MobileNumber;
             userModel.Date = updateDto.Date;
@@ -74,16 +74,15 @@ namespace LookatBackend.Controllers
             userModel.Province = updateDto.Province;
             userModel.Email = updateDto.Email;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(userModel.ToUserDto()); 
+            return Ok(userModel.ToUserDto());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var userModel = _context.Users.FirstOrDefault(x => x.UserId == id);
+            var userModel = await _context.Users.FirstOrDefaultAsync(x => x.UserId == id);
 
             if (userModel == null)
             {
@@ -91,10 +90,9 @@ namespace LookatBackend.Controllers
             }
 
             _context.Users.Remove(userModel);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
     }
 }

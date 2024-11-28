@@ -1,9 +1,11 @@
-﻿using System;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using LookatBackend.Models;
 using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
 using LookatBackend.Mappers;
 using LookatBackend.Dtos.Barangay.UpdateBarangayRequestDto;
+using Microsoft.EntityFrameworkCore;
 
 namespace LookatBackend.Controllers
 {
@@ -18,41 +20,42 @@ namespace LookatBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var barangays = _context.Barangays.ToList()
-                .Select(b => b.ToBarangayDto());
+            var barangays = await _context.Barangays
+                .ToListAsync(); // Fetch all barangays asynchronously
+            var barangayDtos = barangays.Select(b => b.ToBarangayDto());
 
-            return Ok(barangays);
+            return Ok(barangayDtos);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get([FromRoute] string id) 
+        public async Task<IActionResult> Get([FromRoute] string id)
         {
-            var barangay = _context.Barangays.Find(id);
+            var barangay = await _context.Barangays.FindAsync(id);
 
             if (barangay == null)
             {
                 return NotFound();
             }
-            return Ok(barangay);
+            return Ok(barangay.ToBarangayDto());
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateBarangayRequestDto barangayDto)
+        public async Task<IActionResult> Create([FromBody] CreateBarangayRequestDto barangayDto)
         {
             var barangayModel = barangayDto.ToBarangayFromCreateDto();
-            _context.Barangays.Add(barangayModel);
-            _context.SaveChanges();
+            await _context.Barangays.AddAsync(barangayModel); // Add asynchronously
+            await _context.SaveChangesAsync(); // Save changes asynchronously
 
             return CreatedAtAction(nameof(Get), new { id = barangayModel.BarangayId }, barangayModel.ToBarangayDto());
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult Update([FromRoute] string id, [FromBody] UpdateBarangayRequestDto barangayDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateBarangayRequestDto barangayDto)
         {
-            var barangayModel = _context.Barangays.FirstOrDefault(x => x.BarangayId == id);
+            var barangayModel = await _context.Barangays
+                .FirstOrDefaultAsync(x => x.BarangayId == id);
 
             if (barangayModel == null)
             {
@@ -65,17 +68,16 @@ namespace LookatBackend.Controllers
             barangayModel.CityMunicipality = barangayDto.CityMunicipality;
             barangayModel.Province = barangayDto.Province;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(barangayModel.ToBarangayDto());
-
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult Delete([FromRoute] string id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var barangayModel = _context.Barangays.FirstOrDefault(x => x.BarangayId == id);
+            var barangayModel = await _context.Barangays
+                .FirstOrDefaultAsync(x => x.BarangayId == id);
 
             if (barangayModel == null)
             {
@@ -83,7 +85,7 @@ namespace LookatBackend.Controllers
             }
 
             _context.Barangays.Remove(barangayModel);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

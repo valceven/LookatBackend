@@ -4,6 +4,8 @@ using LookatBackend.Dtos.CreateRequestRequestDto;
 using LookatBackend.Mappers;
 using LookatBackend.Dtos.UpdateRequestRequestDto;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace LookatBackend.Controllers
 {
@@ -18,43 +20,41 @@ namespace LookatBackend.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
+            var requests = await _context.Requests.ToListAsync();
+            var requestDtos = requests.Select(r => r.ToRequestDto());
 
-            var documents = _context.Requests.ToList()
-                .Select(r => r.ToRequestDto());
-
-            return Ok(documents);
+            return Ok(requestDtos);
         }
 
         [HttpGet("{id}")]
-        public IActionResult Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var document = _context.Requests.Find(id);
+            var request = await _context.Requests.FindAsync(id);
 
-            if (document == null)
+            if (request == null)
             {
                 return NotFound();
             }
 
-            return Ok(document);
+            return Ok(request.ToRequestDto());
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateRequestRequestDto requestDto)
+        public async Task<IActionResult> Create([FromBody] CreateRequestRequestDto requestDto)
         {
             var requestModel = requestDto.ToRequestFromCreateDto();
-            _context.Requests.Add(requestModel);
-            _context.SaveChanges();
+            await _context.Requests.AddAsync(requestModel);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Get), new { id = requestModel.RequestId }, requestModel.ToRequestDto());
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        public IActionResult Update([FromRoute] int id, [FromBody] UpdateRequestRequestDto requestDto)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateRequestRequestDto requestDto)
         {
-            var requestModel = _context.Requests.FirstOrDefault(x => x.RequestId == id);
+            var requestModel = await _context.Requests.FirstOrDefaultAsync(x => x.RequestId == id);
 
             if (requestModel == null)
             {
@@ -65,16 +65,15 @@ namespace LookatBackend.Controllers
             requestModel.DocumentId = requestDto.DocumentId;
             requestModel.Quantity = requestDto.Quantity;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(requestModel.ToRequestDto());
         }
 
-        [HttpDelete]
-        [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var requestModel = _context.Requests.FirstOrDefault(x => x.RequestId == id);
+            var requestModel = await _context.Requests.FirstOrDefaultAsync(x => x.RequestId == id);
 
             if (requestModel == null)
             {
@@ -82,7 +81,7 @@ namespace LookatBackend.Controllers
             }
 
             _context.Requests.Remove(requestModel);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
