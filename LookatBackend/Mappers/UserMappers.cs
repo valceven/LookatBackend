@@ -16,7 +16,7 @@ namespace LookatBackend.Mappers
                 LastName = userModel.LastName,
                 UserName = userModel.UserName,
                 MobileNumber = userModel.MobileNumber,
-                Date = userModel.Date,
+                //Date = userModel.Date,
                 PhysicalIdNumber = userModel.PhysicalIdNumber,
                 Purok = userModel.Purok,
                 BarangayLoc = userModel.BarangayLoc,
@@ -36,7 +36,7 @@ namespace LookatBackend.Mappers
                 LastName = userDto.LastName,
                 Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password), // Hashing password
                 MobileNumber = userDto.MobileNumber,
-                Date = userDto.Date,
+                //Date = userDto.Date,
                 PhysicalIdNumber = userDto.PhysicalIdNumber,
                 Purok = userDto.Purok,
                 BarangayLoc = userDto.BarangayLoc,
