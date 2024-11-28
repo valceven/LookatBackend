@@ -8,49 +8,43 @@ namespace LookatBackend.Models
         [Key]
         public int UserId { get; set; }
 
-        [Required]
+  
         [Column(TypeName = "nvarchar(100)")]
-        public string UserName { get; set; }
+        public string? UserName { get; set; }
 
-        [Required]
+     
         [Column(TypeName = "nvarchar(100)")]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
-        [Required]
+       
         [Column(TypeName = "nvarchar(100)")]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
-        [Required]
+     
         [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
 
-        [Required]
+  
         [Column(TypeName = "nvarchar(15)")]
         public string MobileNumber { get; set; } // Changed to string
 
-        [Required]
-        [DataType(DataType.Date)]
-        public DateTime Date { get; set; }
+        //[DataType(DataType.Date)]
+        //public DateTime? Date { get; set; }  // Nullable DateTime
 
-        [Required]
         [Column(TypeName = "nvarchar(25)")]
-        public string PhysicalIdNumber { get; set; }
+        public string? PhysicalIdNumber { get; set; }  // Nullable string
 
-        [Required]
         [Column(TypeName = "nvarchar(100)")]
-        public string Purok { get; set; }
+        public string? Purok { get; set; }  // Nullable string
 
-        [Required]
         [Column(TypeName = "nvarchar(100)")]
-        public string BarangayLoc { get; set; }
+        public string? BarangayLoc { get; set; }  // Nullable string
 
-        [Required]
         [Column(TypeName = "nvarchar(100)")]
-        public string CityMunicipality { get; set; }
+        public string? CityMunicipality { get; set; }  // Nullable string
 
-        [Required]
         [Column(TypeName = "nvarchar(100)")]
-        public string Province { get; set; }
+        public string? Province { get; set; }  // Nullable string
 
         [NotMapped]
         public string FullAddress => $"{Purok}, {BarangayLoc}, {CityMunicipality}, {Province}";
@@ -59,15 +53,15 @@ namespace LookatBackend.Models
         [MaxLength(100)]
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Invalid email format.")]
         [Column(TypeName = "nvarchar(100)")]
-        public string Email { get; set; }
+        public string? Email { get; set; }  // Nullable string
 
-        public bool IsVerified { get; set; }
+        public bool? IsVerified { get; set; }  // Nullable boolean
 
         [NotMapped]
-        public IFormFile ProfilePicture { get; set; }
+        public IFormFile? ProfilePicture { get; set; }  // Nullable IFormFile
 
         [ForeignKey("Barangay")]
-        public string? BarangayId { get; set; } // Made nullable
-        public Barangay Barangay { get; set; }
+        public string? BarangayId { get; set; }  // Nullable string
+        public Barangay? Barangay { get; set; }  // Nullable navigation property
     }
 }
