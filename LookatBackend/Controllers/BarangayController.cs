@@ -70,5 +70,22 @@ namespace LookatBackend.Controllers
             return Ok(barangayModel.ToBarangayDto());
 
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] string id)
+        {
+            var barangayModel = _context.Barangays.FirstOrDefault(x => x.BarangayId == id);
+
+            if (barangayModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.Barangays.Remove(barangayModel);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }

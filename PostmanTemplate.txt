@@ -3,6 +3,8 @@
 
 {
     "userName": "JohnDoe",
+    "firstName": "Random",
+    "lastName": "Usr",
     "password": "SecurePassword123",
     "mobileNumber": "09123456789",
     "date": "2024-11-27T00:00:00",

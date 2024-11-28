@@ -10,6 +10,8 @@ namespace LookatBackend.Mappers
             return new UserDto
             {
                 UserId = userModel.UserId, // add late
+                FirstName = userModel.FirstName,
+                LastName = userModel.LastName,           
                 UserName = userModel.UserName,
                 MobileNumber = userModel.MobileNumber,
                 Date = userModel.Date,
@@ -27,6 +29,8 @@ namespace LookatBackend.Mappers
             return new User
             {
                 UserName = userDto.UserName,
+                FirstName = userDto.FirstName,
+                LastName = userDto.LastName, 
                 Password = userDto.Password,
                 MobileNumber = userDto.MobileNumber,
                 Date = userDto.Date,

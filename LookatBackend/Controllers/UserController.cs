@@ -62,6 +62,8 @@ namespace LookatBackend.Controllers
             }
 
             userModel.UserName = updateDto.UserName;
+            userModel.FirstName = updateDto.FirstName;
+            userModel.LastName = updateDto.FirstName;
             userModel.Password = updateDto.Password;
             userModel.MobileNumber = updateDto.MobileNumber;
             userModel.Date = updateDto.Date;
@@ -75,6 +77,23 @@ namespace LookatBackend.Controllers
             _context.SaveChanges();
 
             return Ok(userModel.ToUserDto()); 
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var userModel = _context.Users.FirstOrDefault(x => x.UserId == id);
+
+            if (userModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(userModel);
+            _context.SaveChanges();
+
+            return NoContent();
         }
 
     }

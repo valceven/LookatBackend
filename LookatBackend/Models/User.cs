@@ -14,6 +14,14 @@ namespace LookatBackend.Models
 
         [Required]
         [Column(TypeName = "nvarchar(100)")]
+        public string FirstName { get; set; }
+
+        [Required]
+        [Column(TypeName = "nvarchar(100)")]
+        public string LastName { get; set; }
+
+        [Required]
+        [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
 
         [Required]

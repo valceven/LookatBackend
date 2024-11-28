@@ -67,5 +67,22 @@ namespace LookatBackend.Controllers
 
             return Ok(documentTypeModel.ToDocumentTypeDto());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var documentTypeModel = _context.DocumentTypes.FirstOrDefault(x => x.DocumentId == id);
+
+            if (documentTypeModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.DocumentTypes.Remove(documentTypeModel);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }

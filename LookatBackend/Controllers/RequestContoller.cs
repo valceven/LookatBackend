@@ -69,5 +69,22 @@ namespace LookatBackend.Controllers
 
             return Ok(requestModel.ToRequestDto());
         }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            var requestModel = _context.Requests.FirstOrDefault(x => x.RequestId == id);
+
+            if (requestModel == null)
+            {
+                return NotFound();
+            }
+
+            _context.Requests.Remove(requestModel);
+            _context.SaveChanges();
+
+            return NoContent();
+        }
     }
 }
