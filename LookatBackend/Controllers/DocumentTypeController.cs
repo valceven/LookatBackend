@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LookatBackend.Models;
 using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
-using LookatBackend.Mappers;
 using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
-using Microsoft.EntityFrameworkCore;
+using LookatBackend.Interfaces;
+using LookatBackend.Mappers;
 
 namespace LookatBackend.Controllers
 {
@@ -11,16 +10,17 @@ namespace LookatBackend.Controllers
     [ApiController]
     public class DocumentTypeController : ControllerBase
     {
-        private readonly LookatDbContext _context;
-        public DocumentTypeController(LookatDbContext context)
+        private readonly IDocumentTypeRepository _documentTypeRepository;
+
+        public DocumentTypeController(IDocumentTypeRepository documentTypeRepository)
         {
-            _context = context;
+            _documentTypeRepository = documentTypeRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var documentTypes = await _context.DocumentTypes.ToListAsync();
+            var documentTypes = await _documentTypeRepository.GetAllAsync();
             var documentDtos = documentTypes.Select(d => d.ToDocumentTypeDto());
 
             return Ok(documentDtos);
@@ -29,7 +29,7 @@ namespace LookatBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var document = await _context.DocumentTypes.FindAsync(id);
+            var document = await _documentTypeRepository.GetByIdAsync(id);
 
             if (document == null)
             {
@@ -42,43 +42,40 @@ namespace LookatBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDocumentTypeRequestDto documentTypeDto)
         {
-            var documentModel = documentTypeDto.ToDocumentTypeFromCreateDto();
-            await _context.DocumentTypes.AddAsync(documentModel);
-            await _context.SaveChangesAsync();
+            if (documentTypeDto == null)
+            {
+                return BadRequest("Document type data is required.");
+            }
 
-            return CreatedAtAction(nameof(Get), new { id = documentModel.DocumentId }, documentModel.ToDocumentTypeDto());
+            var documentModel = documentTypeDto.ToDocumentTypeFromCreateDto();
+            var createdDocument = await _documentTypeRepository.CreateAsync(documentModel);
+
+            return CreatedAtAction(nameof(Get), new { id = createdDocument.DocumentId }, createdDocument.ToDocumentTypeDto());
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateDocumentTypeRequestDto documentTypeDto)
         {
-            var documentTypeModel = await _context.DocumentTypes.FirstOrDefaultAsync(x => x.DocumentId == id);
+            var updatedDocument = await _documentTypeRepository.UpdateAsync(id, documentTypeDto);
 
-            if (documentTypeModel == null)
+            if (updatedDocument == null)
             {
                 return NotFound();
             }
 
-            documentTypeModel.DocumentName = documentTypeDto.DocumentName;
-            documentTypeModel.Price = documentTypeDto.Price;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(documentTypeModel.ToDocumentTypeDto());
+            return Ok(updatedDocument.ToDocumentTypeDto());
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var documentTypeModel = await _context.DocumentTypes.FirstOrDefaultAsync(x => x.DocumentId == id);
+            var documentTypeModel = await _documentTypeRepository.DeleteAsync(id);
 
             if (documentTypeModel == null)
             {
                 return NotFound();
             }
-
-            _context.DocumentTypes.Remove(documentTypeModel);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

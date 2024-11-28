@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using LookatBackend.Models;
 using LookatBackend.Dtos.CreateRequestRequestDto;
-using LookatBackend.Mappers;
 using LookatBackend.Dtos.UpdateRequestRequestDto;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading.Tasks;
+using LookatBackend.Interfaces;
+using LookatBackend.Mappers;
 
 namespace LookatBackend.Controllers
 {
@@ -13,16 +10,17 @@ namespace LookatBackend.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        private readonly LookatDbContext _context;
-        public RequestController(LookatDbContext context)
+        private readonly IRequestRepository _requestRepository;
+
+        public RequestController(IRequestRepository requestRepository)
         {
-            _context = context;
+            _requestRepository = requestRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var requests = await _context.Requests.ToListAsync();
+            var requests = await _requestRepository.GetAllAsync();
             var requestDtos = requests.Select(r => r.ToRequestDto());
 
             return Ok(requestDtos);
@@ -31,7 +29,7 @@ namespace LookatBackend.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var request = await _context.Requests.FindAsync(id);
+            var request = await _requestRepository.GetByIdAsync(id);
 
             if (request == null)
             {
@@ -44,44 +42,40 @@ namespace LookatBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRequestRequestDto requestDto)
         {
-            var requestModel = requestDto.ToRequestFromCreateDto();
-            await _context.Requests.AddAsync(requestModel);
-            await _context.SaveChangesAsync();
+            if (requestDto == null)
+            {
+                return BadRequest("Request data is required.");
+            }
 
-            return CreatedAtAction(nameof(Get), new { id = requestModel.RequestId }, requestModel.ToRequestDto());
+            var requestModel = requestDto.ToRequestFromCreateDto();
+            var createdRequest = await _requestRepository.CreateAsync(requestModel);
+
+            return CreatedAtAction(nameof(Get), new { id = createdRequest.RequestId }, createdRequest.ToRequestDto());
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateRequestRequestDto requestDto)
         {
-            var requestModel = await _context.Requests.FirstOrDefaultAsync(x => x.RequestId == id);
+            var updatedRequest = await _requestRepository.UpdateAsync(id, requestDto);
 
-            if (requestModel == null)
+            if (updatedRequest == null)
             {
                 return NotFound();
             }
 
-            requestModel.RequestType = requestDto.RequestType;
-            requestModel.DocumentId = requestDto.DocumentId;
-            requestModel.Quantity = requestDto.Quantity;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(requestModel.ToRequestDto());
+            return Ok(updatedRequest.ToRequestDto());
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var requestModel = await _context.Requests.FirstOrDefaultAsync(x => x.RequestId == id);
+            var deletedRequest = await _requestRepository.DeleteAsync(id);
 
-            if (requestModel == null)
+            if (deletedRequest == null)
             {
                 return NotFound();
             }
-
-            _context.Requests.Remove(requestModel);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

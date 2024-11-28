@@ -1,17 +1,19 @@
 ﻿using LookatBackend.Dtos.User;
 using LookatBackend.Models;
+using BCrypt.Net;  // For password hashing
 
 namespace LookatBackend.Mappers
 {
     public static class UserMappers
     {
+        // Mapper to convert User model to UserDto
         public static UserDto ToUserDto(this User userModel)
         {
             return new UserDto
             {
-                UserId = userModel.UserId, // add late
+                UserId = userModel.UserId, // Assuming UserId is an auto-generated key
                 FirstName = userModel.FirstName,
-                LastName = userModel.LastName,           
+                LastName = userModel.LastName,
                 UserName = userModel.UserName,
                 MobileNumber = userModel.MobileNumber,
                 Date = userModel.Date,
@@ -24,14 +26,15 @@ namespace LookatBackend.Mappers
             };
         }
 
+        // Mapper to convert CreateUserRequestDto to User model
         public static User ToUserFromCreateDto(this CreateUserRequestDto userDto)
         {
             return new User
             {
                 UserName = userDto.UserName,
                 FirstName = userDto.FirstName,
-                LastName = userDto.LastName, 
-                Password = userDto.Password,
+                LastName = userDto.LastName,
+                Password = BCrypt.Net.BCrypt.HashPassword(userDto.Password), // Hashing password
                 MobileNumber = userDto.MobileNumber,
                 Date = userDto.Date,
                 PhysicalIdNumber = userDto.PhysicalIdNumber,
@@ -40,10 +43,8 @@ namespace LookatBackend.Mappers
                 CityMunicipality = userDto.CityMunicipality,
                 Province = userDto.Province,
                 Email = userDto.Email
+                // Optional fields like ProfilePicture can be handled later
             };
         }
     }
-
-    
 }
-
