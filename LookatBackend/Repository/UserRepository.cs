@@ -73,7 +73,7 @@ namespace LookatBackend.Repository
             userModel.LastName = updateDto.LastName;
             userModel.Password = updateDto.Password;
             userModel.MobileNumber = updateDto.MobileNumber;
-            userModel.Date = updateDto.Date;
+            //userModel.Date = updateDto.Date;
             userModel.PhysicalIdNumber = updateDto.PhysicalIdNumber;
             userModel.Purok = updateDto.Purok;
             userModel.BarangayLoc = updateDto.BarangayLoc;
