@@ -12,17 +12,17 @@ namespace LookatBackend.Mappers
             return new UserDto
             {
                 UserId = userModel.UserId, // Assuming UserId is an auto-generated key
-                FirstName = userModel.FirstName,
-                LastName = userModel.LastName,
-                UserName = userModel.UserName,
-                MobileNumber = userModel.MobileNumber,
-                //Date = userModel.Date,
-                PhysicalIdNumber = userModel.PhysicalIdNumber,
-                Purok = userModel.Purok,
-                BarangayLoc = userModel.BarangayLoc,
-                CityMunicipality = userModel.CityMunicipality,
-                Province = userModel.Province,
-                Email = userModel.Email
+                FirstName = userModel.FirstName ?? "N/A", // Default to "N/A" if null
+                LastName = userModel.LastName ?? "N/A",
+                UserName = userModel.UserName ?? "N/A",
+                MobileNumber = userModel.MobileNumber ?? "N/A",
+                Date = userModel.Date ?? DateTime.MinValue, // Use default DateTime value if null
+                PhysicalIdNumber = userModel.PhysicalIdNumber ?? "N/A",
+                Purok = userModel.Purok ?? "N/A",
+                BarangayLoc = userModel.BarangayLoc ?? "N/A",
+                CityMunicipality = userModel.CityMunicipality ?? "N/A",
+                Province = userModel.Province ?? "N/A",
+                Email = userModel.Email ?? "N/A"
             };
         }
 

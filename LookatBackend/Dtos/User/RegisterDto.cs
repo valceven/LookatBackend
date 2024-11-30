@@ -5,12 +5,9 @@ namespace LookatBackend.Dtos.User
 {
     public class RegisterDto
     {
-        [Required]
-        [Column(TypeName = "nvarchar(15)")]
         public string MobileNumber { get; set; }
-
-        [Required]
-        [Column(TypeName = "nvarchar(100)")]
         public string Password { get; set; }
+        //public UserDto UserDto { get; set; }
+        //public VerifyOtpRequestDto VerifyOtpRequestDto { get; set; }
     }
 }

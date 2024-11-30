@@ -28,8 +28,8 @@ namespace LookatBackend.Models
         [Column(TypeName = "nvarchar(15)")]
         public string MobileNumber { get; set; } // Changed to string
 
-        //[DataType(DataType.Date)]
-        //public DateTime? Date { get; set; }  // Nullable DateTime
+        [DataType(DataType.Date)]
+        public DateTime? Date { get; set; }  // Nullable DateTime
 
         [Column(TypeName = "nvarchar(25)")]
         public string? PhysicalIdNumber { get; set; }  // Nullable string

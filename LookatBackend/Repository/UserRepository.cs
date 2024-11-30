@@ -59,6 +59,11 @@ namespace LookatBackend.Repository
             return userModel;
         }
 
+        public Task GetByMobileNumberAsync(string mobileNumber)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<User?> UpdateAsync(int id, UpdateUserRequestDto updateDto)
         {
             var userModel = await _context.Users.FirstOrDefaultAsync(x => x.UserId == id);
