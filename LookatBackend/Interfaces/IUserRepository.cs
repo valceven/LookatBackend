@@ -11,6 +11,7 @@ namespace LookatBackend.Interfaces
         Task<User> CreateAsync(User userModel);
         Task<User?> UpdateAsync(int id, UpdateUserRequestDto userDto);
         Task<User?> DeleteAsync(int id);
+        Task GetByMobileNumberAsync(string mobileNumber);
     }
 
 }

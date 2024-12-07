@@ -47,7 +47,7 @@ namespace LookatBackend.Repository
         }
 
         public async Task<List<UserDto>> GetAllAsync()
-{
+        {
             return await _context.Users
                 .Select(u => u.ToUserDto())
                 .ToListAsync();
@@ -57,6 +57,11 @@ namespace LookatBackend.Repository
         {
             var userModel = await _context.Users.FindAsync(id);
             return userModel;
+        }
+
+        public Task GetByMobileNumberAsync(string mobileNumber)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<User?> UpdateAsync(int id, UpdateUserRequestDto updateDto)

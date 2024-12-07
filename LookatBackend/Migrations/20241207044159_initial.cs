@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LookatBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -42,12 +42,29 @@ namespace LookatBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OtpRecords",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    MobileNumber = table.Column<string>(type: "nvarchar(15)", nullable: false),
+                    Otp = table.Column<int>(type: "int", nullable: false),
+                    ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OtpRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
                     UserId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(100)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     MobileNumber = table.Column<string>(type: "nvarchar(15)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -105,6 +122,9 @@ namespace LookatBackend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "OtpRecords");
+
             migrationBuilder.DropTable(
                 name: "Requests");
 

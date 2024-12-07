@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    [Migration("20241128023015_updated Usermodel")]
-    partial class updatedUsermodel
+    [Migration("20241207090233_added barangay password")]
+    partial class addedbarangaypassword
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,10 @@ namespace LookatBackend.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CityMunicipality")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
@@ -73,6 +77,29 @@ namespace LookatBackend.Migrations
                     b.HasKey("DocumentId");
 
                     b.ToTable("DocumentTypes");
+                });
+
+            modelBuilder.Entity("LookatBackend.Models.OtpRecords", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("Otp")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OtpRecords");
                 });
 
             modelBuilder.Entity("LookatBackend.Models.Request", b =>

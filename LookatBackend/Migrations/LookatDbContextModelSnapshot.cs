@@ -39,6 +39,10 @@ namespace LookatBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<string>("Province")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
@@ -70,6 +74,29 @@ namespace LookatBackend.Migrations
                     b.HasKey("DocumentId");
 
                     b.ToTable("DocumentTypes");
+                });
+
+            modelBuilder.Entity("LookatBackend.Models.OtpRecords", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("MobileNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<int>("Otp")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OtpRecords");
                 });
 
             modelBuilder.Entity("LookatBackend.Models.Request", b =>

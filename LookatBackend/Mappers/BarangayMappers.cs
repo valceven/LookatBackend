@@ -23,6 +23,7 @@ namespace LookatBackend.Mappers
             return new Barangay
             {
                 BarangayName = barangayDto.BarangayName,
+                Password = BCrypt.Net.BCrypt.HashPassword(barangayDto.Password),
                 Purok = barangayDto.Purok,
                 BarangayLoc = barangayDto.BarangayLoc,
                 CityMunicipality = barangayDto.CityMunicipality,

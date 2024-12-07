@@ -1,4 +1,3 @@
-using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
 using LookatBackend.Dtos.Barangay.UpdateBarangayRequestDto;
 using LookatBackend.Interfaces;
 using LookatBackend.Models;
@@ -16,7 +15,17 @@ namespace LookatBackend.Repository
         }
 
         public async Task<Barangay> CreateAsync(Barangay barangayModel)
-        {
+{
+            var exists = await _context.Barangays
+                .AnyAsync(b =>
+                    b.BarangayName == barangayModel.BarangayName &&
+                    b.CityMunicipality == barangayModel.CityMunicipality &&
+                    b.Province == barangayModel.Province);
+
+            if (exists)
+            {
+                throw new InvalidOperationException("Barangay with the same combination already exists.");
+            }
 
             await _context.Barangays.AddAsync(barangayModel);
             await _context.SaveChangesAsync();
