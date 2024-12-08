@@ -16,6 +16,9 @@ namespace LookatBackend.Models
 
         [Required]
         public double Price { get; set; }
-        
+
+        [ForeignKey("Barangay")]
+        public string BarangayId { get; set; } // Foreign key to Barangay model
+        public Barangay Barangay { get; set; } // Navigation property to Barangay
     }
 }
