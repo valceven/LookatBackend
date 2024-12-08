@@ -9,36 +9,32 @@ var builder = WebApplication.CreateBuilder(args);
 // Load environment variables
 Env.Load();
 
-// Add services to the container
-
 // Configure the database context
 builder.Services.AddDbContext<LookatDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"))
 );
+
+// Configure Kestrel to listen on specific URLs
+builder.WebHost.UseUrls("https://localhost:7213");
 
 // CORS configuration to allow the React app to make requests to the backend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
-               .AllowAnyMethod()
-               .AllowAnyHeader();
-    });
-
-    // Allow Swagger UI to make requests too
-    options.AddPolicy("AllowSwaggerUI", builder =>
-    {
-        builder.WithOrigins("http://localhost:7213") // Swagger UI URL
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+        builder
+            .WithOrigins("http://localhost:3000")  // Specific React app origin
+            .SetIsOriginAllowed(_ => true)  // Allow any origin during development
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
     });
 });
 
 // Add HTTPS redirection
 builder.Services.AddHttpsRedirection(options =>
 {
-    options.HttpsPort = 7213; // Default HTTPS port
+    options.HttpsPort = 7213;
 });
 
 // Add controllers and Swagger
@@ -61,9 +57,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Enable CORS for the React app and Swagger UI
+// Ensure CORS is configured early in the pipeline
 app.UseCors("AllowReactApp");
-app.UseCors("AllowSwaggerUI");
 
 // Use HTTPS redirection
 app.UseHttpsRedirection();
@@ -73,8 +68,5 @@ app.UseAuthorization();
 
 // Map controllers
 app.MapControllers();
-
-// Override default port
-app.Urls.Add("https://localhost:7213");
 
 app.Run();

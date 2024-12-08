@@ -51,6 +51,8 @@ namespace LookatBackend.Controllers
                 return BadRequest("Barangay data is required.");
             }
 
+            barangayDto.Password = $"Barangay{barangayDto.BarangayLoc}@123";
+
             var barangayModel = barangayDto.ToBarangayFromCreateDto();
             var createdBarangay = await _barangayRepository.CreateAsync(barangayModel);
 
