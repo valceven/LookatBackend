@@ -18,7 +18,7 @@ namespace LookatBackend.Repository
 {
             var exists = await _context.Barangays
                 .AnyAsync(b =>
-                    b.BarangayName == barangayModel.BarangayName &&
+                    b.BarangayLoc == barangayModel.BarangayLoc &&
                     b.CityMunicipality == barangayModel.CityMunicipality &&
                     b.Province == barangayModel.Province);
 

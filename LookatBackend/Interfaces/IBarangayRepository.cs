@@ -1,5 +1,4 @@
 using LookatBackend.Dtos.Barangay.UpdateBarangayRequestDto;
-using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
 using LookatBackend.Models;
 
 namespace LookatBackend.Interfaces

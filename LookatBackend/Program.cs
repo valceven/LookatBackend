@@ -3,6 +3,7 @@ using LookatBackend.Models;
 using LookatBackend.Interfaces;
 using LookatBackend.Repository;
 using DotNetEnv;
+using LookatBackend.Services.AuthService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +39,7 @@ builder.Services.AddHttpsRedirection(options =>
 });
 
 // Add controllers and Swagger
+builder.Services.AddScoped<AuthService>(); // Register AuthService
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -62,6 +64,8 @@ app.UseCors("AllowReactApp");
 
 // Use HTTPS redirection
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 // Use authorization
 app.UseAuthorization();
