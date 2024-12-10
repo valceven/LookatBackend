@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
-using LookatBackend.Mappers;
+﻿using LookatBackend.Dtos.Barangay.CreateBarangayRequestDto;
 using LookatBackend.Dtos.Barangay.UpdateBarangayRequestDto;
 using LookatBackend.Interfaces;
-
+using Microsoft.AspNetCore.Mvc;
 
 namespace LookatBackend.Controllers
 {
@@ -11,38 +9,40 @@ namespace LookatBackend.Controllers
     [ApiController]
     public class BarangayController : ControllerBase
     {
-        private readonly IBarangayRepository _barangayRepository;
+        private readonly IBarangayService _barangayService;
 
-        public BarangayController(IBarangayRepository barangayRepository)
+        public BarangayController(IBarangayService barangayService)
         {
-            _barangayRepository = barangayRepository;
+            _barangayService = barangayService;
         }
 
+        // Get all Barangays
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var barangays = await _barangayRepository.GetAllAsync();
+            var barangays = await _barangayService.GetAllBarangaysAsync();
             if (barangays == null || barangays.Count == 0)
             {
                 return NotFound();
             }
 
-            var barangayDtos = barangays.Select(b => b.ToBarangayDto());
-            return Ok(barangayDtos);
+            return Ok(barangays);  // Controller only generates response here
         }
 
+        // Get Barangay by ID
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] string id)
         {
-            var barangay = await _barangayRepository.GetByIdAsync(id);
+            var barangay = await _barangayService.GetBarangayByIdAsync(id);
             if (barangay == null)
             {
                 return NotFound();
             }
 
-            return Ok(barangay.ToBarangayDto());
+            return Ok(barangay);
         }
 
+        // Create Barangay
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBarangayRequestDto barangayDto)
         {
@@ -51,19 +51,16 @@ namespace LookatBackend.Controllers
                 return BadRequest("Barangay data is required.");
             }
 
-            barangayDto.Password = $"Barangay{barangayDto.BarangayLoc}@123";
-
-            var barangayModel = barangayDto.ToBarangayFromCreateDto();
-            var createdBarangay = await _barangayRepository.CreateAsync(barangayModel);
-
+            var createdBarangay = await _barangayService.CreateBarangayAsync(barangayDto);
             if (createdBarangay == null)
             {
                 return BadRequest("Unable to create Barangay.");
             }
 
-            return CreatedAtAction(nameof(Get), new { id = createdBarangay.BarangayId }, createdBarangay.ToBarangayDto());
+            return CreatedAtAction(nameof(Get), new { id = createdBarangay.BarangayId }, createdBarangay);
         }
 
+        // Update Barangay
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] string id, [FromBody] UpdateBarangayRequestDto barangayDto)
         {
@@ -72,19 +69,20 @@ namespace LookatBackend.Controllers
                 return BadRequest();
             }
 
-            var updatedBarangay = await _barangayRepository.UpdateAsync(id, barangayDto);
+            var updatedBarangay = await _barangayService.UpdateBarangayAsync(id, barangayDto);
             if (updatedBarangay == null)
             {
                 return NotFound();
             }
 
-            return Ok(updatedBarangay.ToBarangayDto());
+            return Ok(updatedBarangay);
         }
 
+        // Delete Barangay
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            var deletedBarangay = await _barangayRepository.DeleteAsync(id);
+            var deletedBarangay = await _barangayService.DeleteBarangayAsync(id);
             if (deletedBarangay == null)
             {
                 return NotFound();

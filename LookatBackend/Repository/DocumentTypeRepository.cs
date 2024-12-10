@@ -1,4 +1,3 @@
-using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
 using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
 using LookatBackend.Interfaces;
 using LookatBackend.Models;
@@ -20,11 +19,6 @@ namespace LookatBackend.Repository
             await _context.DocumentTypes.AddAsync(documentType);
             await _context.SaveChangesAsync();
             return documentType;
-        }
-
-        public Task<DocumentType> CreateAsync(CreateDocumentTypeRequestDto documentTypeDto)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<DocumentType?> DeleteAsync(int id)

@@ -15,7 +15,7 @@ namespace LookatBackend.Repository
         }
 
         public async Task<Barangay> CreateAsync(Barangay barangayModel)
-{
+        {
             var exists = await _context.Barangays
                 .AnyAsync(b =>
                     b.BarangayLoc == barangayModel.BarangayLoc &&

@@ -2,7 +2,6 @@
 using LookatBackend.Dtos.CreateRequestRequestDto;
 using LookatBackend.Dtos.UpdateRequestRequestDto;
 using LookatBackend.Interfaces;
-using LookatBackend.Mappers;
 
 namespace LookatBackend.Controllers
 {
@@ -10,34 +9,31 @@ namespace LookatBackend.Controllers
     [ApiController]
     public class RequestController : ControllerBase
     {
-        private readonly IRequestRepository _requestRepository;
+        private readonly IRequestService _requestService;
 
-
-        public RequestController(IRequestRepository requestRepository)
+        public RequestController(IRequestService requestService)
         {
-            _requestRepository = requestRepository;
+            _requestService = requestService;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var requests = await _requestRepository.GetAllAsync();
-            var requestDtos = requests.Select(r => r.ToRequestDto());
-
-            return Ok(requestDtos);
+            var requests = await _requestService.GetAllAsync();
+            return Ok(requests);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var request = await _requestRepository.GetByIdAsync(id);
+            var request = await _requestService.GetByIdAsync(id);
 
             if (request == null)
             {
                 return NotFound();
             }
 
-            return Ok(request.ToRequestDto());
+            return Ok(request);
         }
 
         [HttpPost]
@@ -48,32 +44,29 @@ namespace LookatBackend.Controllers
                 return BadRequest("Request data is required.");
             }
 
-            var requestModel = requestDto.ToRequestFromCreateDto();
-            var createdRequest = await _requestRepository.CreateAsync(requestModel);
-
-            return CreatedAtAction(nameof(Get), new { id = createdRequest.RequestId }, createdRequest.ToRequestDto());
+            var createdRequest = await _requestService.CreateAsync(requestDto);
+            return CreatedAtAction(nameof(Get), new { id = createdRequest.RequestId }, createdRequest);
         }
-
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateRequestRequestDto requestDto)
         {
-            var updatedRequest = await _requestRepository.UpdateAsync(id, requestDto);
+            var updatedRequest = await _requestService.UpdateAsync(id, requestDto);
 
             if (updatedRequest == null)
             {
                 return NotFound();
             }
 
-            return Ok(updatedRequest.ToRequestDto());
+            return Ok(updatedRequest);
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var deletedRequest = await _requestRepository.DeleteAsync(id);
+            var success = await _requestService.DeleteAsync(id);
 
-            if (deletedRequest == null)
+            if (!success)
             {
                 return NotFound();
             }

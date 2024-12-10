@@ -4,6 +4,11 @@ using LookatBackend.Interfaces;
 using LookatBackend.Repository;
 using DotNetEnv;
 using LookatBackend.Services.AuthService;
+using LookatBackend.Services;
+using LookatBackend.Repositories;
+using LookatBackend.Services.User;
+using LookatBackend.Services.DocumentType;
+using LookatBackend.Services.Request;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +42,12 @@ builder.Services.AddHttpsRedirection(options =>
 {
     options.HttpsPort = 7213;
 });
+
+// add services
+builder.Services.AddScoped<IUserService, UsersService>();
+builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
+builder.Services.AddScoped<IRequestService, RequestService>();
+builder.Services.AddScoped<IBarangayService, BarangayService>();
 
 // Add controllers and Swagger
 builder.Services.AddScoped<AuthService>(); // Register AuthService

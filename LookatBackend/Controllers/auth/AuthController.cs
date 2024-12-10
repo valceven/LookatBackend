@@ -29,7 +29,6 @@ namespace LookatBackend.Controllers.AuthController
             {
                 return BadRequest("Invalid login request");
             }
-
             try
             {
                 var loginResponse = await _authService.LoginAsync(loginDto);
