@@ -32,9 +32,14 @@ namespace LookatBackend.Controllers.AuthController
 
             try
             {
-                var token = await _authService.LoginAsync(loginDto);
+                var loginResponse = await _authService.LoginAsync(loginDto);
 
-                return Ok(new { Token = token });
+
+                return Ok(new 
+                { 
+                    Token = loginResponse.Token, 
+                    BarangayId = loginResponse.BarangayId 
+                });
             }
             catch (UnauthorizedAccessException)
             {
