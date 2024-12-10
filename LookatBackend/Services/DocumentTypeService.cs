@@ -1,4 +1,3 @@
-using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
 using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
 using LookatBackend.Interfaces;
 using LookatBackend.Mappers;
@@ -18,7 +17,17 @@ namespace LookatBackend.Services.DocumentType
         public async Task<List<DocumentTypeDto>> GetAllAsync()
         {
             var documentTypes = await _documentTypeRepository.GetAllAsync();
-            return documentTypes.Select(d => d.ToDocumentTypeDto()).ToList();
+            var documentTypeDtos = documentTypes.Select(dt => dt.ToDocumentTypeDto()).ToList();
+        
+            return documentTypeDtos;
+        }
+
+        public async Task<List<DocumentTypeDto>> GetAllByBarangay(string id)
+        {
+            var documentTypes = await _documentTypeRepository.GetAllByBarangays(id);
+            var documentTypeDtos = documentTypes.Select(dt => dt.ToDocumentTypeDto()).ToList();
+        
+            return documentTypeDtos;
         }
 
         public async Task<DocumentTypeDto?> GetByIdAsync(int id)
@@ -29,10 +38,20 @@ namespace LookatBackend.Services.DocumentType
 
         public async Task<DocumentTypeDto> CreateAsync(CreateDocumentTypeRequestDto documentTypeDto)
         {
+            bool exists = await _documentTypeRepository.ExistsByNameAsync(documentTypeDto.DocumentName,documentTypeDto.BarangayId);
+
+            if (exists)
+            {
+                throw new InvalidOperationException($"A document with the name '{documentTypeDto.DocumentName}' already exists.");
+            }
+
             var documentType = documentTypeDto.ToDocumentTypeFromCreateDto();
+
             var createdDocumentType = await _documentTypeRepository.CreateAsync(documentType);
+
             return createdDocumentType.ToDocumentTypeDto();
         }
+
 
         public async Task<DocumentTypeDto?> UpdateAsync(int id, UpdateDocumentTypeRequestDto documentTypeDto)
         {
@@ -45,5 +64,7 @@ namespace LookatBackend.Services.DocumentType
             var deletedDocumentType = await _documentTypeRepository.DeleteAsync(id);
             return deletedDocumentType != null;
         }
+
+        
     }
 }

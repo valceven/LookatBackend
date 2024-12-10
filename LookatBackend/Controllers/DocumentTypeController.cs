@@ -1,4 +1,4 @@
-﻿using LookatBackend.Dtos.DocumentType.CreateDocumentTypeRequestDto;
+﻿using LookatBackend.Dtos.DocumentType;
 using LookatBackend.Dtos.DocumentType.UpdateDocumentTypeRequestDto;
 using LookatBackend.Interfaces;
 using LookatBackend.Services;
@@ -24,7 +24,7 @@ namespace LookatBackend.Controllers
             return Ok(documentDtos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             var documentDto = await _documentTypeService.GetByIdAsync(id);
@@ -35,6 +35,13 @@ namespace LookatBackend.Controllers
             }
 
             return Ok(documentDto);
+        }
+
+        [HttpGet("by/{barangayId}")]
+        public async Task<IActionResult> GetAllByBarangay([FromRoute] string barangayId)
+        {
+            var documentDtos = await _documentTypeService.GetAllByBarangay(barangayId);
+            return Ok(documentDtos);
         }
 
         [HttpPost]
