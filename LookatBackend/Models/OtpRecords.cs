@@ -8,8 +8,8 @@ namespace LookatBackend.Models
         [Key]
         public int Id { get; set; }
 
-        [Column(TypeName = "nvarchar(15)")]
-        public string MobileNumber { get; set; }
+        [Column(TypeName = "nvarchar(100)")]
+        public string Email { get; set; }
         public int Otp { get; set; }
         public DateTime ExpirationTime { get; set; }
     }

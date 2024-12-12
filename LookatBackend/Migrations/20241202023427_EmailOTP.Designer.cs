@@ -4,6 +4,7 @@ using LookatBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    partial class LookatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241202023427_EmailOTP")]
+    partial class EmailOTP
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -82,7 +85,7 @@ namespace LookatBackend.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<DateTime>("ExpirationTime")
                         .HasColumnType("datetime2");
@@ -153,6 +156,7 @@ namespace LookatBackend.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("MobileNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(15)");
 
                     b.Property<string>("Password")

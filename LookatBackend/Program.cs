@@ -4,14 +4,38 @@ using LookatBackend.Interfaces;
 using LookatBackend.Repository;
 using LookatBackend.Services;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
+
 builder.Services.AddDbContext<LookatDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DevConnection"))
 );
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+       .AddJwtBearer(options =>
+       {
+           options.RequireHttpsMetadata = false; // Set to true in production
+           options.SaveToken = true;
+           options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+           {
+               ValidateIssuer = true,
+               ValidateAudience = true,
+               ValidateLifetime = true,
+               ValidateIssuerSigningKey = true,
+               ValidIssuer = "YourIssuer", // Replace with your issuer
+               ValidAudience = "YourAudience", // Replace with your audience
+               IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKey")) // Replace with a secret key
+           };
+       });
+
+
 
 // CORS configuration to allow the React app to make requests to the backend
 builder.Services.AddCors(options =>
@@ -41,7 +65,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBarangayRepository, BarangayRepository>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
-builder.Services.AddScoped<SmsService>();
+builder.Services.AddScoped<EmailService>();
 
 var app = builder.Build();
 

@@ -10,6 +10,10 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.Win32;
 using LookatBackend.Services;
 using static System.Net.WebRequestMethods;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace LookatBackend.Controllers
 {
@@ -19,13 +23,13 @@ namespace LookatBackend.Controllers
     {
         private readonly IUserRepository _userRepo;
         private readonly LookatDbContext _context;
-        private readonly SmsService _smsService;
+        private readonly EmailService _emailService;
 
-        public UserController(IUserRepository userRepo, LookatDbContext context, SmsService smsService)
+        public UserController(IUserRepository userRepo, LookatDbContext context, EmailService emailService)
         {
             _userRepo = userRepo;
             _context = context;
-            _smsService = smsService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -49,37 +53,85 @@ namespace LookatBackend.Controllers
             return Ok(user.ToUserDto());
         }
 
-        [HttpPost("register")] // THIS IS TEMPORARY BECAUSE NEED TO CHECK HOW TO SEND SMS
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        [HttpPost("request-otp")]
+        public async Task<IActionResult> RequestOtp([FromBody] RegisterRequestDto registerRequest)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-    
-            if (await _context.Users.AnyAsync(u => u.MobileNumber == registerDto.MobileNumber))
-                return BadRequest("Mobile number is already registered.");
+            // Check if the email is already registered
+            if (await _context.Users.AnyAsync(u => u.Email == registerRequest.Email))
+                return BadRequest("Email is already registered.");
 
-         
+            // Generate OTP
             var otp = new Random().Next(1000, 10000);
 
-            //  OTP record with expiration time (5 minutes)
-            var otpRec = new OtpRecords
+            // Save OTP with expiration time
+            var otpRecord = new OtpRecords
             {
-                MobileNumber = registerDto.MobileNumber,
+                Email = registerRequest.Email,
                 Otp = otp,
                 ExpirationTime = DateTime.UtcNow.AddMinutes(5)
             };
 
-            //Send OTP to user's mobile number using an SMS service
-            await _smsService.SendOtpAsync(registerDto.MobileNumber, otp);
-
-            //Add OTP record to database
-            _context.OtpRecords.Add(otpRec);
+            _context.OtpRecords.Add(otpRecord);
             await _context.SaveChangesAsync();
 
-            return Ok(new { Message = "OTP sent. Please verify to complete registration." });
+            // Send OTP email
+            var subject = "Your OTP Code";
+            var body = $"Your OTP code is {otp}. It will expire in 5 minutes.";
+
+            try
+            {
+                await _emailService.SendEmailAsync(registerRequest.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Failed to send email: " + ex.Message);
+            }
+
+            return Ok(new { Message = "OTP sent to your email. Please verify to complete registration." });
         }
 
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequestDto verifyOtpRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Validate OTP
+            var otpRecord = await _context.OtpRecords
+                .FirstOrDefaultAsync(o => o.Email == verifyOtpRequest.UserDto.Email && o.Otp == verifyOtpRequest.Otp);
+
+            if (otpRecord == null)
+                return BadRequest("Invalid OTP.");
+
+            if (otpRecord.ExpirationTime < DateTime.UtcNow)
+                return BadRequest("OTP has expired. Please request a new one.");
+
+            // If OTP is valid, mark as verified
+            otpRecord.ExpirationTime = DateTime.UtcNow; // Invalidate OTP
+            _context.OtpRecords.Update(otpRecord);
+
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(verifyOtpRequest.UserDto.Password);
+            // Register the user
+            var user = new User
+            {
+                Email = verifyOtpRequest.UserDto.Email,
+                Password = hashedPassword // Hash the password for security
+                                          // You can add other fields here (like Name, Phone Number, etc.)
+            };
+
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "OTP verified successfully. User registered successfully." });
+        }
+
+
+        
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] VerifyOtpRequestDto verifyRegisterDto)
@@ -89,7 +141,7 @@ namespace LookatBackend.Controllers
 
             // Step 1: Check if the OTP record exists
             var otpRecord = await _context.OtpRecords
-                .FirstOrDefaultAsync(o => o.MobileNumber == verifyRegisterDto.UserDto.MobileNumber
+                .FirstOrDefaultAsync(o => o.Email == verifyRegisterDto.UserDto.Email
                                            && o.Otp == verifyRegisterDto.Otp);
 
             if (otpRecord == null)
@@ -152,6 +204,46 @@ namespace LookatBackend.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Find user by email
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == loginRequest.Email);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password))
+            {
+                return Unauthorized("Invalid credentials.");
+            }
+
+            // Create JWT token
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Role, user.IsVerified == true ? "User" : "Admin") // Assuming IsVerified is for role or any other condition
+            };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("YourSecretKeyHere")); // Secret key should be same as in Program.cs
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: "YourIssuer",
+                audience: "YourAudience",
+                claims: claims,
+                expires: DateTime.Now.AddHours(1), // Token expiration time
+                signingCredentials: credentials
+            );
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var tokenString = tokenHandler.WriteToken(token);
+
+            return Ok(new { Token = tokenString });
+        }
+
 
 
     }
