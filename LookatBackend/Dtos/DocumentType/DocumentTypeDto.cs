@@ -10,5 +10,7 @@ namespace LookatBackend.Dtos.DocumentType
         public double Price { get; set; }
         public string BarangayId { get; set; }
 
+        public Boolean IsAvailable { get; set; }
+
     }
 }
