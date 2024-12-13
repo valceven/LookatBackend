@@ -48,6 +48,7 @@ builder.Services.AddScoped<IUserService, UsersService>();
 builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBarangayService, BarangayService>();
+builder.Services.AddScoped<EmailService>();
 
 // Add controllers and Swagger
 builder.Services.AddScoped<AuthService>(); // Register AuthService
