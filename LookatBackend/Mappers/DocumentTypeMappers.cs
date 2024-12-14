@@ -13,6 +13,7 @@ namespace LookatBackend.Mappers
                 DocumentId = documentTypeModel.DocumentId,
                 DocumentName = documentTypeModel.DocumentName,
                 Price = documentTypeModel.Price,
+                IsAvailable = documentTypeModel.IsAvailable,
                 BarangayId = documentTypeModel.BarangayId
             };
         }
@@ -23,6 +24,7 @@ namespace LookatBackend.Mappers
             {
                 DocumentName = documentTypeDto.DocumentName,
                 Price = documentTypeDto.Price,
+                IsAvailable = documentTypeDto.IsAvailable,
                 BarangayId = documentTypeDto.BarangayId
             };
         }

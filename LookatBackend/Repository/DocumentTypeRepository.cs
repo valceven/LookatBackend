@@ -72,6 +72,7 @@ namespace LookatBackend.Repository
 
             documentType.DocumentName = documentTypeDto.DocumentName;
             documentType.Price = documentTypeDto.Price;
+            documentType.IsAvailable = documentTypeDto.IsAvailable;
 
             await _context.SaveChangesAsync();
             return documentType;
