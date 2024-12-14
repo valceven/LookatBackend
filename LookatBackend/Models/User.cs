@@ -66,8 +66,8 @@ namespace LookatBackend.Models
         [NotMapped]
         public IFormFile? ProfilePicture { get; set; }
 
-        [ForeignKey("Barangay")]
-        public string? BarangayId { get; set; } // Made nullable
-        public Barangay? Barangay { get; set; }
+        //[ForeignKey("Barangay")]
+        //public string? BarangayId { get; set; } // Made nullable
+        //public Barangay? Barangay { get; set; }
     }
 }

@@ -43,7 +43,16 @@ builder.Services.AddHttpsRedirection(options =>
     options.HttpsPort = 7213;
 });
 
-// add services
+// Add session services
+builder.Services.AddDistributedMemoryCache();  // Use in-memory session store
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Session timeout
+    options.Cookie.HttpOnly = true;  // Ensure the cookie is HttpOnly for security
+    options.Cookie.IsEssential = true;  // Ensure session cookie is always sent even without consent
+});
+
+// Add services
 builder.Services.AddScoped<IUserService, UsersService>();
 builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
@@ -51,7 +60,7 @@ builder.Services.AddScoped<IBarangayService, BarangayService>();
 builder.Services.AddScoped<EmailService>();
 
 // Add controllers and Swagger
-builder.Services.AddScoped<AuthService>(); // Register AuthService
+builder.Services.AddScoped<AuthService>();  // Register AuthService
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -77,9 +86,11 @@ app.UseCors("AllowReactApp");
 // Use HTTPS redirection
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
+// Enable session middleware
+app.UseSession();
 
-// Use authorization
+// Use authentication and authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 // Map controllers

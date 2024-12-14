@@ -3,9 +3,11 @@ using LookatBackend.Dtos.User;
 using LookatBackend.Interfaces;
 using LookatBackend.Models;
 using LookatBackend.Services;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace LookatBackend.Controllers
 {
@@ -160,8 +162,20 @@ namespace LookatBackend.Controllers
             var user = new User
             {
                 Email = verifyOtpRequest.UserDto.Email,
-                Password = hashedPassword // Hash the password for security
+                Password = hashedPassword, // Hash the password for security
                                           // You can add other fields here (like Name, Phone Number, etc.)
+                UserName = verifyOtpRequest.UserDto.UserName,
+                FirstName = verifyOtpRequest.UserDto.FirstName,
+                LastName = verifyOtpRequest.UserDto.LastName,
+                MobileNumber = verifyOtpRequest.UserDto.MobileNumber,
+                Date = verifyOtpRequest.UserDto.Date,
+                PhysicalIdNumber = verifyOtpRequest.UserDto.PhysicalIdNumber,
+                Purok = verifyOtpRequest.UserDto.Purok,
+                BarangayLoc = verifyOtpRequest.UserDto.BarangayLoc,
+                CityMunicipality = verifyOtpRequest.UserDto.CityMunicipality,
+                Province = verifyOtpRequest.UserDto.Province,
+                IsVerified = verifyOtpRequest.UserDto.IsVerified,
+                //BarangayId = verifyOtpRequest.UserDto.BarangayId,
             };
 
             _context.Users.Add(user);
@@ -171,6 +185,31 @@ namespace LookatBackend.Controllers
 
             return Ok(new { Message = "OTP verified successfully. User registered successfully." });
         }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginDto loginRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Find user by email
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == loginRequest.Email);
+
+            if (user == null)
+                return BadRequest("Invalid email or password.");
+
+            // Verify password using BCrypt
+            if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password))
+                return BadRequest("Invalid password.");
+
+            HttpContext.Session.SetString("UserId", user.UserId.ToString());
+
+
+            return Ok(new { Message = "Login successful." });
+        }
+
+
 
     }
 }

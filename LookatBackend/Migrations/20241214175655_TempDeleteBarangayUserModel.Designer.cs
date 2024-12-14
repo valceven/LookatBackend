@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    [Migration("20241213153804_added change to documents")]
-    partial class addedchangetodocuments
+    [Migration("20241214175655_TempDeleteBarangayUserModel")]
+    partial class TempDeleteBarangayUserModel
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,12 +96,12 @@ namespace LookatBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<DateTime>("ExpirationTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("MobileNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(15)");
 
                     b.Property<int>("Otp")
                         .HasColumnType("int");
@@ -143,9 +143,6 @@ namespace LookatBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
-                    b.Property<string>("BarangayId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("BarangayLoc")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
@@ -158,7 +155,6 @@ namespace LookatBackend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -166,7 +162,7 @@ namespace LookatBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsVerified")
+                    b.Property<bool?>("IsVerified")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -199,8 +195,6 @@ namespace LookatBackend.Migrations
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("BarangayId");
-
                     b.ToTable("Users");
                 });
 
@@ -224,15 +218,6 @@ namespace LookatBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("DocumentType");
-                });
-
-            modelBuilder.Entity("LookatBackend.Models.User", b =>
-                {
-                    b.HasOne("LookatBackend.Models.Barangay", "Barangay")
-                        .WithMany()
-                        .HasForeignKey("BarangayId");
-
-                    b.Navigation("Barangay");
                 });
 #pragma warning restore 612, 618
         }

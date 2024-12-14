@@ -22,7 +22,7 @@ namespace LookatBackend.Dtos.User
         public string? Email { get; set; }
         public bool? IsVerified { get; set; }
         //public IFormFile? ProfilePicture { get; set; }
-        public string? BarangayId { get; set; } // Made nullable
+        //public string? BarangayId { get; set; } // Made nullable
        // public Barangay Barangay { get; set; }
     }
 }

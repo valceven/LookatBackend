@@ -16,6 +16,7 @@ namespace LookatBackend.Migrations
                 columns: table => new
                 {
                     BarangayId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     BarangayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Purok = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     BarangayLoc = table.Column<string>(type: "nvarchar(100)", nullable: false),
@@ -28,32 +29,40 @@ namespace LookatBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DocumentTypes",
-                columns: table => new
-                {
-                    DocumentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DocumentName = table.Column<string>(type: "nvarchar(255)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DocumentTypes", x => x.DocumentId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OtpRecords",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    MobileNumber = table.Column<string>(type: "nvarchar(15)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Otp = table.Column<int>(type: "int", nullable: false),
                     ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OtpRecords", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DocumentTypes",
+                columns: table => new
+                {
+                    DocumentId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DocumentName = table.Column<string>(type: "nvarchar(255)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    IsAvailable = table.Column<bool>(type: "bit", nullable: false),
+                    BarangayId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DocumentTypes", x => x.DocumentId);
+                    table.ForeignKey(
+                        name: "FK_DocumentTypes_Barangays_BarangayId",
+                        column: x => x.BarangayId,
+                        principalTable: "Barangays",
+                        principalColumn: "BarangayId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,8 +82,8 @@ namespace LookatBackend.Migrations
                     BarangayLoc = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CityMunicipality = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    IsVerified = table.Column<bool>(type: "bit", nullable: true),
                     BarangayId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
@@ -107,6 +116,11 @@ namespace LookatBackend.Migrations
                         principalColumn: "DocumentId",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DocumentTypes_BarangayId",
+                table: "DocumentTypes",
+                column: "BarangayId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Requests_DocumentId",

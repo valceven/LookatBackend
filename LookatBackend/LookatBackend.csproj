@@ -27,4 +27,8 @@
     <EditorConfigFiles Remove="C:\Users\Joseph Clyde Mar\Desktop\KYLA\SCHOOL FILES\CSIT321-F2 Application Development and Emergeing Technologies\Projects\LookAt\LookAtBackend\LookatBackend\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
