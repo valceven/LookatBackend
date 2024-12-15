@@ -46,6 +46,7 @@ namespace LookatBackend.Repositories
             // Only update properties that are not null
             if (user.FirstName != null) existingUser.FirstName = user.FirstName;
             if (user.LastName != null) existingUser.LastName = user.LastName;
+            if (user.BarangayId != null) existingUser.BarangayId = user.BarangayId;
             existingUser.IsVerified = user.IsVerified;
             if (user.Purok != null) existingUser.Purok = user.Purok;
             if (user.BarangayLoc != null) existingUser.BarangayLoc = user.BarangayLoc;

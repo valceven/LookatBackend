@@ -8,5 +8,7 @@
         public int Quantity { get; set; }
         public bool IsPending { get; set; }
         public string? BarangayId { get; set; }
+        public string? Requestor { get; set; }
+
     }
 }

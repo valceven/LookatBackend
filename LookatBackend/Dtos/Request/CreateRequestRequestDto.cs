@@ -8,5 +8,6 @@ namespace LookatBackend.Dtos.CreateRequestRequestDto
         public int DocumentId { get; set; }
         public int Quantity { get; set; }
         public string? BarangayId { get; set; }
+        public string? Requestor { get; set; }
     }
 }
