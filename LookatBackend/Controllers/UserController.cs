@@ -208,7 +208,7 @@ namespace LookatBackend.Controllers
             HttpContext.Session.SetString("UserId", user.UserId.ToString());
 
 
-            return Ok(new { Message = "Login successful." });
+            return Ok(user);
         }
 
 
