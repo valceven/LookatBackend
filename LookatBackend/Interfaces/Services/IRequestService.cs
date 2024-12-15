@@ -9,6 +9,7 @@ namespace LookatBackend.Interfaces
     public interface IRequestService
     {
         Task<List<RequestDto>> GetAllAsync();
+        Task<List<RequestDto>> GetAllByBarangayIdAsync(string barangayId);
         Task<RequestDto?> GetByIdAsync(int id);
         Task<RequestDto> CreateAsync(CreateRequestRequestDto requestDto);
         Task<RequestDto?> UpdateAsync(int id, UpdateRequestRequestDto requestDto);

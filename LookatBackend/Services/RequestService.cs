@@ -47,5 +47,11 @@ namespace LookatBackend.Services.Request
             var deleted = await _requestRepository.DeleteAsync(id);
             return deleted != null;
         }
+
+        public async Task<List<RequestDto>> GetAllByBarangayIdAsync(string barangayId)
+        {
+            var requests = await _requestRepository.GetAllByBarangayId(barangayId);
+            return requests.Select(t => t.ToRequestDto()).ToList();
+        }
     }
 }

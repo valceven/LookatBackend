@@ -40,6 +40,13 @@ namespace LookatBackend.Repository
             return await _context.Requests.ToListAsync();
         }
 
+        public async Task<List<Request>> GetAllByBarangayId(string barangayId)
+        {
+            return await _context.Requests
+                .Where(r => r.DocumentType.BarangayId == barangayId)
+                .ToListAsync();
+        }
+
         public async Task<Request?> GetByIdAsync(int id)
         {
             return await _context.Requests.FindAsync(id);
@@ -57,6 +64,7 @@ namespace LookatBackend.Repository
             request.RequestType = requestDto.RequestType;
             request.DocumentId = requestDto.DocumentId;
             request.Quantity = requestDto.Quantity;
+            request.IsPending = requestDto.IsPending;
 
             await _context.SaveChangesAsync();
             return request;
