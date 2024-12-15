@@ -9,6 +9,7 @@ using LookatBackend.Repositories;
 using LookatBackend.Services.User;
 using LookatBackend.Services.DocumentType;
 using LookatBackend.Services.Request;
+using LookatBackend.Interfaces.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,8 @@ builder.Services.AddScoped<IDocumentTypeService, DocumentTypeService>();
 builder.Services.AddScoped<IRequestService, RequestService>();
 builder.Services.AddScoped<IBarangayService, BarangayService>();
 builder.Services.AddScoped<EmailService>();
+builder.Services.AddScoped<OtpService>();
+builder.Services.AddScoped<LoginService>();
 
 // Add controllers and Swagger
 builder.Services.AddScoped<AuthService>();  // Register AuthService
@@ -70,6 +73,9 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBarangayRepository, BarangayRepository>();
 builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IDocumentTypeRepository, DocumentTypeRepository>();
+
+builder.Services.AddHttpContextAccessor();  // Register IHttpContextAccessor
+
 
 var app = builder.Build();
 

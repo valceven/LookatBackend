@@ -5,12 +5,14 @@ using LookatBackend.Models;
 using LookatBackend.Mappers;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace LookatBackend.Services.User
 {
     public class UsersService : IUserService
     {
         private readonly IUserRepository _usersRepository;
+      
 
         public UsersService(IUserRepository usersRepository)
         {
@@ -63,9 +65,11 @@ namespace LookatBackend.Services.User
             return await _usersRepository.DeleteUserAsync(id);
         }
 
-        public Task<UserDto> RegisterUserAsync(RegisterDto registerDto)
-        {
-            throw new NotImplementedException();
-        }
+        
+
+
+
+
+
     }
 }

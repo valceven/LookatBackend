@@ -2,7 +2,8 @@
 {
     public class VerifyOtpRequestDto
     {
-        public UserDto UserDto { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public int Otp { get; set; }
     }
 }

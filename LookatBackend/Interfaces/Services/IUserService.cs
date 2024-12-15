@@ -8,7 +8,6 @@ namespace LookatBackend.Interfaces
     {
         Task<List<UserDto>> GetAllUsersAsync();
         Task<UserDto?> GetUserByIdAsync(int id);
-        Task<UserDto> RegisterUserAsync(RegisterDto registerDto);
         Task<UserDto> CreateUserAsync(CreateUserRequestDto createUserRequestDto);
         Task<UserDto?> UpdateUserAsync(int id, UpdateUserRequestDto updateDto);
         Task<bool> DeleteUserAsync(int id);

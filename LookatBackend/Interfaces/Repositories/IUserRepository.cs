@@ -12,5 +12,6 @@ namespace LookatBackend.Interfaces
         Task<User> CreateUserAsync(User user);
         Task<User> UpdateUserAsync(int id, UpdateUserRequestDto updateDto);
         Task<bool> DeleteUserAsync(int id);
+       
     }
 }
