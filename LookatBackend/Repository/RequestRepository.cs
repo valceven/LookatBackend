@@ -62,7 +62,6 @@ namespace LookatBackend.Repository
             }
 
             request.RequestType = requestDto.RequestType;
-            request.DocumentId = requestDto.DocumentId;
             request.Quantity = requestDto.Quantity;
             request.IsPending = requestDto.IsPending;
 
