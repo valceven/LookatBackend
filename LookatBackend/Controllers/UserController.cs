@@ -4,6 +4,7 @@ using LookatBackend.Interfaces;
 using LookatBackend.Models;
 using LookatBackend.Services;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -186,6 +187,7 @@ namespace LookatBackend.Controllers
             return Ok(new { Message = "OTP verified successfully. User registered successfully." });
         }
 
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginDto loginRequest)
         {
@@ -208,6 +210,107 @@ namespace LookatBackend.Controllers
 
             return Ok(new { Message = "Login successful." });
         }
+
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto userRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Check if the email is already registered
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Email == userRequest.Email);
+
+            if (user == null)
+                return BadRequest("No user found with this email");
+
+            // Generate OTP
+            var otp = new Random().Next(1000, 10000);
+
+            // Save OTP with expiration time
+            var otpRecord = new OtpRecords
+            {
+                Email = userRequest.Email,
+                Otp = otp,
+                ExpirationTime = DateTime.UtcNow.AddMinutes(5)
+            };
+
+            _context.OtpRecords.Add(otpRecord);
+            await _context.SaveChangesAsync();
+
+            // Send OTP email
+            var subject = "Your OTP Code";
+            var body = $"Your OTP code is {otp}. It will expire in 5 minutes.";
+
+            try
+            {
+                await _emailService.SendEmailAsync(userRequest.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Failed to send email: " + ex.Message);
+            }
+
+            return Ok(new { Message = "OTP sent to your email. Please verify to complete changing of password." });
+        }
+
+
+
+        [HttpPost("password-otp-verify")]
+        public async Task<IActionResult> ChangePasswordOTP([FromBody] UserChangePassDto verifyOtpRequest)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Validate OTP
+
+            var otpRecord = await _context.OtpRecords
+                .FirstOrDefaultAsync(o => o.Otp == verifyOtpRequest.Otp);
+
+            if (otpRecord == null)
+                return BadRequest("Invalid OTP.");
+
+            if (otpRecord.ExpirationTime < DateTime.UtcNow)
+                return BadRequest("OTP has expired. Please request a new one.");
+
+            // If OTP is valid, mark as verified
+            otpRecord.ExpirationTime = DateTime.UtcNow; // Invalidate OTP
+            _context.OtpRecords.Update(otpRecord);
+
+
+
+            return Ok(new { Message = "OTP verified successfully" });
+        }
+
+
+        [HttpPut("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePasswordDto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            // Ensure the email exists and retrieve the user
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == changePasswordDto.Email);
+            if (user == null)
+                return NotFound(new { Message = "User not found" });
+
+            // Hash the new password
+            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(changePasswordDto.Password);
+
+            // Update the password in the user entity
+            user.Password = hashedPassword;
+
+            // Save changes to the database
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { Message = "Password updated successfully" });
+        }
+
+
+
+
 
 
 
