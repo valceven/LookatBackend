@@ -10,8 +10,10 @@ namespace LookatBackend.Dtos.User
         public string? UserName { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+
         public string Password { get; set; } 
-        public string MobileNumber { get; set; }
+        public string? MobileNumber { get; set; }
+
         public DateTime? Date { get; set; }
         public string? PhysicalIdNumber { get; set; }
         public string? Purok { get; set; }

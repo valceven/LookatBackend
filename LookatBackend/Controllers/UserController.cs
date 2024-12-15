@@ -55,7 +55,6 @@ namespace LookatBackend.Controllers
             return Ok(user);
         }
 
-        
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
