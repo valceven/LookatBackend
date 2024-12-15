@@ -50,20 +50,6 @@ namespace LookatBackend.Controllers
             return Ok(user);
         }
 
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
-        {
-            try
-            {
-                var user = await _userService.RegisterUserAsync(registerDto);
-                return Ok(new { Message = "OTP sent. Please verify to complete registration.", user.MobileNumber });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateUserRequestDto userDto)
         {
@@ -168,7 +154,6 @@ namespace LookatBackend.Controllers
                 UserName = verifyOtpRequest.UserDto.UserName,
                 FirstName = verifyOtpRequest.UserDto.FirstName,
                 LastName = verifyOtpRequest.UserDto.LastName,
-                MobileNumber = verifyOtpRequest.UserDto.MobileNumber,
                 Date = verifyOtpRequest.UserDto.Date,
                 PhysicalIdNumber = verifyOtpRequest.UserDto.PhysicalIdNumber,
                 Purok = verifyOtpRequest.UserDto.Purok,

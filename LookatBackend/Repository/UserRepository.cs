@@ -43,13 +43,8 @@ namespace LookatBackend.Repositories
             if (existingUser == null)
                 return null;
 
-            existingUser.UserName = user.UserName;
             existingUser.FirstName = user.FirstName;
             existingUser.LastName = user.LastName;
-            existingUser.MobileNumber = user.MobileNumber;
-            existingUser.Password = user.Password; // Assuming password is already hashed
-            existingUser.Date = user.Date;
-            existingUser.PhysicalIdNumber = user.PhysicalIdNumber;
             existingUser.Purok = user.Purok;
             existingUser.BarangayLoc = user.BarangayLoc;
             existingUser.CityMunicipality = user.CityMunicipality;
