@@ -37,27 +37,29 @@ namespace LookatBackend.Repositories
         }
 
         // Update an existing user
-        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserRequestDto user)
+        public async Task<User> UpdateUserAsync(int id, UpdateUserRequestDto user)
         {
             var existingUser = await _context.Users.FindAsync(id);
             if (existingUser == null)
-                return NotFound();
+                return null;
 
             // Only update properties that are not null
-            existingUser.FirstName = user.FirstName ?? existingUser.FirstName;
-            existingUser.LastName = user.LastName ?? existingUser.LastName;
-            existingUser.Purok = user.Purok ?? existingUser.Purok;
-            existingUser.BarangayLoc = user.BarangayLoc ?? existingUser.BarangayLoc;
-            existingUser.CityMunicipality = user.CityMunicipality ?? existingUser.CityMunicipality;
-            existingUser.Province = user.Province ?? existingUser.Province;
-            existingUser.Email = user.Email ?? existingUser.Email;
-            existingUser.PhysicalIdNumber = user.PhysicalIdNumber ?? existingUser.PhysicalIdNumber;
-            existingUser.IdType = user.IdType ?? existingUser.IdType;
-            existingUser.Date = user.Date ?? existingUser.Date;
+            if (user.FirstName != null) existingUser.FirstName = user.FirstName;
+            if (user.LastName != null) existingUser.LastName = user.LastName;
+            existingUser.IsVerified = user.IsVerified;
+            if (user.Purok != null) existingUser.Purok = user.Purok;
+            if (user.BarangayLoc != null) existingUser.BarangayLoc = user.BarangayLoc;
+            if (user.CityMunicipality != null) existingUser.CityMunicipality = user.CityMunicipality;
+            if (user.Province != null) existingUser.Province = user.Province;
+            if (user.Email != null) existingUser.Email = user.Email;
+            if (user.PhysicalIdNumber != null) existingUser.PhysicalIdNumber = user.PhysicalIdNumber;
+            if (user.IdType != null) existingUser.IdType = user.IdType;
+            if (user.Date.HasValue) existingUser.Date = user.Date;
 
             await _context.SaveChangesAsync();
-            return Ok(existingUser);
+            return existingUser;
         }
+
 
 
         // Delete a user

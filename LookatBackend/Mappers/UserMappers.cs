@@ -22,7 +22,8 @@ namespace LookatBackend.Mappers
                 BarangayLoc = userModel.BarangayLoc ?? "N/A",
                 CityMunicipality = userModel.CityMunicipality ?? "N/A",
                 Province = userModel.Province ?? "N/A",
-                Email = userModel.Email ?? "N/A"
+                Email = userModel.Email ?? "N/A",
+                IsVerified = userModel.IsVerified
             };
         }
 
@@ -42,7 +43,9 @@ namespace LookatBackend.Mappers
                 BarangayLoc = userDto.BarangayLoc,
                 CityMunicipality = userDto.CityMunicipality,
                 Province = userDto.Province,
-                Email = userDto.Email
+                Email = userDto.Email,
+                IsVerified = userDto.IsVerified
+
                 // Optional fields like ProfilePicture can be handled later
             };
         }

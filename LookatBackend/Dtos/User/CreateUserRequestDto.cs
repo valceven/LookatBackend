@@ -19,6 +19,8 @@ namespace LookatBackend.Dtos.User
         public string Province { get; set; }
         public string FullAddress => $"{Purok}, {BarangayLoc}, {CityMunicipality}, {Province}";
         public string Email { get; set; }
+
+        public bool IsVerified { get; set; }
         // commnetd because not so sure pa public IFormFile ProfilePicture { get; set; }
         // also need mo verify para naay barngay public string? BarangayId { get; set; } // Made nullable
         //public Barangay Barangay { get; set; }

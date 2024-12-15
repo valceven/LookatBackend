@@ -1,37 +1,19 @@
-using System.Text.Json.Serialization;
 
-public class UpdateUserRequestDto
+namespace LookatBackend.Dtos.UpdateUser
 {
-    [JsonPropertyName("FirstName")]
-    public string? FirstName { get; set; }
-
-    [JsonPropertyName("LastName")]
-    public string? LastName { get; set; }
-
-    [JsonPropertyName("Purok")]
-    public string? Purok { get; set; }
-
-    [JsonPropertyName("BarangayLoc")]
-    public string? BarangayLoc { get; set; }
-
-    [JsonPropertyName("CityMunicipality")]
-    public string? CityMunicipality { get; set; }
-
-    [JsonPropertyName("Province")]
-    public string? Province { get; set; }
-
-    [JsonPropertyName("IdType")]
-    public string? IdType { get; set; }
-
-    [JsonPropertyName("Date")]
-    public DateTime? Date { get; set; }
-
-    [JsonPropertyName("PhysicalIdNumber")]
-    public string? PhysicalIdNumber { get; set; }
-
-    [JsonPropertyName("Email")]
-    public string? Email { get; set; }
-
-    [JsonPropertyName("FullAddress")]
-    public string? FullAddress => $"{Purok}, {BarangayLoc}, {CityMunicipality}, {Province}";
+    public class UpdateUserRequestDto
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Purok { get; set; }
+        public string BarangayLoc { get; set; }
+        public string CityMunicipality { get; set; }
+        public string IdType { get; set; }
+        public DateTime? Date { get; set; }
+        public string? PhysicalIdNumber { get; set; }
+        public bool IsVerified {get; set;}
+        public string Province { get; set; }
+        public string FullAddress => $"{Purok}, {BarangayLoc}, {CityMunicipality}, {Province}";
+        public string Email { get; set; }
+    }
 }
