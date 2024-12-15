@@ -13,7 +13,9 @@ namespace LookatBackend.Mappers
                 RequestId = requestModel.RequestId,
                 RequestType = requestModel.RequestType,
                 DocumentId = requestModel.DocumentId,
-                Quantity = requestModel.Quantity
+                Quantity = requestModel.Quantity,
+                IsPending = requestModel.IsPending,
+                BarangayId = requestModel.BarangayId,
             };
         }
 
@@ -23,7 +25,8 @@ namespace LookatBackend.Mappers
             {
                 RequestType = requestDto.RequestType,
                 DocumentId = requestDto.DocumentId,
-                Quantity = requestDto.Quantity
+                Quantity = requestDto.Quantity,
+                BarangayId = requestDto.BarangayId,
             };
         }
     }

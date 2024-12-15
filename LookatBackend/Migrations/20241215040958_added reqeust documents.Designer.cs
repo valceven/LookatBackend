@@ -4,6 +4,7 @@ using LookatBackend.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    partial class LookatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215040958_added reqeust documents")]
+    partial class addedreqeustdocuments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -147,6 +150,9 @@ namespace LookatBackend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
+                    b.Property<string>("BarangayId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("BarangayLoc")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
@@ -199,6 +205,8 @@ namespace LookatBackend.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("BarangayId");
+
                     b.ToTable("Users");
                 });
 
@@ -222,6 +230,15 @@ namespace LookatBackend.Migrations
                         .IsRequired();
 
                     b.Navigation("DocumentType");
+                });
+
+            modelBuilder.Entity("LookatBackend.Models.User", b =>
+                {
+                    b.HasOne("LookatBackend.Models.Barangay", "Barangay")
+                        .WithMany()
+                        .HasForeignKey("BarangayId");
+
+                    b.Navigation("Barangay");
                 });
 #pragma warning restore 612, 618
         }

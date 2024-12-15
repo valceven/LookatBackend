@@ -36,6 +36,19 @@ namespace LookatBackend.Controllers
             return Ok(request);
         }
 
+        [HttpGet("by/{barangayId}")] 
+        public async Task<IActionResult> GetAllByBarangay([FromRoute] string barangayId)
+        {
+            var request = await _requestService.GetAllByBarangayIdAsync(barangayId);
+
+            if (request == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(request);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRequestRequestDto requestDto)
         {
