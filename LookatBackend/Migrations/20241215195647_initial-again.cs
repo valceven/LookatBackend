@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LookatBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class initialagain : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -78,11 +78,12 @@ namespace LookatBackend.Migrations
                     MobileNumber = table.Column<string>(type: "nvarchar(15)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PhysicalIdNumber = table.Column<string>(type: "nvarchar(25)", nullable: false),
+                    IdType = table.Column<string>(type: "nvarchar(25)", nullable: false),
                     Purok = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     BarangayLoc = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     CityMunicipality = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(100)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     IsVerified = table.Column<bool>(type: "bit", nullable: true),
                     BarangayId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
@@ -104,6 +105,8 @@ namespace LookatBackend.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RequestType = table.Column<int>(type: "int", nullable: false),
                     DocumentId = table.Column<int>(type: "int", nullable: false),
+                    BarangayId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsPending = table.Column<bool>(type: "bit", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

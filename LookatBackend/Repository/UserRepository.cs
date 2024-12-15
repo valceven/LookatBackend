@@ -37,23 +37,28 @@ namespace LookatBackend.Repositories
         }
 
         // Update an existing user
-        public async Task<User> UpdateUserAsync(int id, UpdateUserRequestDto user)
+        public async Task<IActionResult> UpdateUserAsync(int id, [FromBody] UpdateUserRequestDto user)
         {
             var existingUser = await _context.Users.FindAsync(id);
             if (existingUser == null)
-                return null;
+                return NotFound();
 
-            existingUser.FirstName = user.FirstName;
-            existingUser.LastName = user.LastName;
-            existingUser.Purok = user.Purok;
-            existingUser.BarangayLoc = user.BarangayLoc;
-            existingUser.CityMunicipality = user.CityMunicipality;
-            existingUser.Province = user.Province;
-            existingUser.Email = user.Email;
+            // Only update properties that are not null
+            existingUser.FirstName = user.FirstName ?? existingUser.FirstName;
+            existingUser.LastName = user.LastName ?? existingUser.LastName;
+            existingUser.Purok = user.Purok ?? existingUser.Purok;
+            existingUser.BarangayLoc = user.BarangayLoc ?? existingUser.BarangayLoc;
+            existingUser.CityMunicipality = user.CityMunicipality ?? existingUser.CityMunicipality;
+            existingUser.Province = user.Province ?? existingUser.Province;
+            existingUser.Email = user.Email ?? existingUser.Email;
+            existingUser.PhysicalIdNumber = user.PhysicalIdNumber ?? existingUser.PhysicalIdNumber;
+            existingUser.IdType = user.IdType ?? existingUser.IdType;
+            existingUser.Date = user.Date ?? existingUser.Date;
 
             await _context.SaveChangesAsync();
-            return existingUser;
+            return Ok(existingUser);
         }
+
 
         // Delete a user
         public async Task<bool> DeleteUserAsync(int id)

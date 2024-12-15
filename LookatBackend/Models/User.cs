@@ -37,6 +37,10 @@ namespace LookatBackend.Models
         public string? PhysicalIdNumber { get; set; } = " ";
 
         [Required]
+        [Column(TypeName = "nvarchar(25)")]
+        public string? IdType { get; set; } = " ";
+
+        [Required]
         [Column(TypeName = "nvarchar(100)")]
         public string? Purok { get; set; } = " ";
 

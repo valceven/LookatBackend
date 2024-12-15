@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LookatBackend.Migrations
 {
     [DbContext(typeof(LookatDbContext))]
-    [Migration("20241215040958_added reqeust documents")]
-    partial class addedreqeustdocuments
+    [Migration("20241215195647_initial-again")]
+    partial class initialagain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -165,12 +165,17 @@ namespace LookatBackend.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("IdType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(25)");
 
                     b.Property<bool?>("IsVerified")
                         .HasColumnType("bit");

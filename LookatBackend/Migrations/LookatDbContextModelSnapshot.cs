@@ -170,6 +170,10 @@ namespace LookatBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("IdType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(25)");
+
                     b.Property<bool?>("IsVerified")
                         .HasColumnType("bit");
 
