@@ -17,6 +17,10 @@ namespace LookatBackend.Models
         public DocumentType DocumentType { get; set; }
 
         [Required]
+        public string BarangayId { get; set; }
+
+        public bool IsPending { get; set; }
+        [Required]
         public int Quantity { get; set; }
 
     }

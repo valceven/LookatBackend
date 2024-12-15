@@ -5,14 +5,14 @@
 namespace LookatBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class UserFieldNullable : Migration
+    public partial class addedreqeustdocuments : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DocumentTypes_Barangays_BarangayId",
-                table: "DocumentTypes");
+            migrationBuilder.DropColumn(
+                name: "MobileNumber",
+                table: "OtpRecords");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsVerified",
@@ -32,31 +32,42 @@ namespace LookatBackend.Migrations
                 oldType: "nvarchar(100)",
                 oldMaxLength: 100);
 
-            migrationBuilder.AlterColumn<string>(
+            migrationBuilder.AddColumn<string>(
                 name: "BarangayId",
-                table: "DocumentTypes",
-                type: "nvarchar(450)",
+                table: "Requests",
+                type: "nvarchar(max)",
                 nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)",
-                oldNullable: true);
+                defaultValue: "");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_DocumentTypes_Barangays_BarangayId",
-                table: "DocumentTypes",
-                column: "BarangayId",
-                principalTable: "Barangays",
-                principalColumn: "BarangayId",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.AddColumn<bool>(
+                name: "IsPending",
+                table: "Requests",
+                type: "bit",
+                nullable: false,
+                defaultValue: false);
+
+            migrationBuilder.AddColumn<string>(
+                name: "Email",
+                table: "OtpRecords",
+                type: "nvarchar(100)",
+                nullable: false,
+                defaultValue: "");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_DocumentTypes_Barangays_BarangayId",
-                table: "DocumentTypes");
+            migrationBuilder.DropColumn(
+                name: "BarangayId",
+                table: "Requests");
+
+            migrationBuilder.DropColumn(
+                name: "IsPending",
+                table: "Requests");
+
+            migrationBuilder.DropColumn(
+                name: "Email",
+                table: "OtpRecords");
 
             migrationBuilder.AlterColumn<bool>(
                 name: "IsVerified",
@@ -80,20 +91,12 @@ namespace LookatBackend.Migrations
                 oldMaxLength: 100,
                 oldNullable: true);
 
-            migrationBuilder.AlterColumn<string>(
-                name: "BarangayId",
-                table: "DocumentTypes",
-                type: "nvarchar(450)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DocumentTypes_Barangays_BarangayId",
-                table: "DocumentTypes",
-                column: "BarangayId",
-                principalTable: "Barangays",
-                principalColumn: "BarangayId");
+            migrationBuilder.AddColumn<string>(
+                name: "MobileNumber",
+                table: "OtpRecords",
+                type: "nvarchar(15)",
+                nullable: false,
+                defaultValue: "");
         }
     }
 }
